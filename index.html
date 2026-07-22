@@ -73,6 +73,7 @@
   <div class="toolbar">
     <button onclick="saveAll(true)">💾 Save</button>
     <button class="ghost" onclick="resetAll()">↺ Reset to defaults</button>
+    <button class="ghost" onclick="exportJSON()">⤓ Export JSON</button>
   </div>
 
   <div class="hpbar">
@@ -91,6 +92,7 @@
     <button class="tab" id="tabbtn-drake" onclick="showTab('drake')">🐉 Drake Companion</button>
     <button class="tab" id="tabbtn-spells" onclick="showTab('spells')">📖 Spellbook</button>
     <button class="tab" id="tabbtn-bag" onclick="showTab('bag')">🎒 Bag</button>
+    <button class="tab" id="tabbtn-notes" onclick="showTab('notes')">📝 Session Notes</button>
   </div>
 
   <div id="tab-char">
@@ -294,6 +296,21 @@
     <p style="font-size:.85rem;color:var(--muted);margin:.3em 0">Backpack · bedroll · mess kit · tinderbox · 10 torches · 10 days rations · waterskin · 50 ft hempen rope — plus: Whisper · Longbow +1 · Shortsword · quiver of 20 arrows · leather armor</p>
   </div>
   </div><!-- /tab-bag -->
+
+  <div id="tab-notes" style="display:none">
+    <div class="grid cols-3">
+      <div class="card" style="grid-column:span 3">
+        <h2>📝 Session Notes</h2>
+        <div id="noteList"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button onclick="addNote()">+ Add session note</button>
+          <button class="ghost" onclick="copyNotes()">📋 Copy all notes</button>
+        </div>
+        <p class="note">Notes auto-save · newest on top · click ✕ to remove</p>
+      </div>
+    </div>
+  </div>
+
 </div>
 <div class="saved" id="savedTag">✓ saved</div>
 
@@ -341,6 +358,7 @@ try{
   if(s) state = Object.assign(state, s);
 }catch(e){}
 if(!Array.isArray(state.items)) state.items = [];
+if(!Array.isArray(state.notes)) state.notes = [];
 
 function render(){
   Object.keys(DEFAULTS).forEach(k=>{
@@ -414,7 +432,7 @@ function adjHP(d){
   state.HPCurrent=String(next); el.value=String(next); saveAll();
 }
 function showTab(t){
-  ['char','drake','spells','bag'].forEach(x=>{
+  ['char','drake','spells','bag','notes'].forEach(x=>{
     document.getElementById('tab-'+x).style.display = x===t?'':'none';
     document.getElementById('tabbtn-'+x).classList.toggle('active', x===t);
   });
@@ -431,8 +449,9 @@ function renderItems(){
   t.innerHTML='<tr><th style="text-align:left">Item</th><th style="width:70px">Qty</th><th style="width:60px"></th></tr>';
   state.items.forEach((it,i)=>{
     const tr=document.createElement('tr');
-    tr.innerHTML='<td style="text-align:left;padding:4px 6px"></td><td><input style="text-align:center" value=""></td><td style="text-align:center"><button class="ghost" style="padding:2px 8px" title="remove">✕</button></td>';
-    tr.children[0].textContent=it.name;
+    tr.innerHTML='<td style="padding:4px 6px"><input style="width:100%" value=""></td><td style="text-align:center"><input style="text-align:center" value=""></td><td style="text-align:center"><button class="ghost" style="padding:2px 8px" title="remove">✕</button></td>';
+    const nm=tr.children[0].firstChild; nm.value=it.name;
+    nm.oninput=()=>{state.items[i].name=nm.value; saveAll();};
     const q=tr.children[1].firstChild; q.value=it.qty;
     q.oninput=()=>{state.items[i].qty=q.value; saveAll();};
     tr.children[2].firstChild.onclick=()=>{state.items.splice(i,1); saveAll(); renderItems();};
@@ -447,6 +466,48 @@ function addItem(){
   saveAll(); renderItems();
 }
 renderItems();
+function renderNotes(){
+  const wrap=document.getElementById('noteList'); wrap.innerHTML='';
+  if(!state.notes.length){
+    wrap.innerHTML='<p class="note" style="margin:6px 0">No notes yet — hit “+ Add session note”.</p>';
+    return;
+  }
+  state.notes.forEach((n,i)=>{
+    const card=document.createElement('div');
+    card.style.cssText='background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:10px';
+    card.innerHTML='<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><input placeholder="Session title / date" style="flex:1"><button class="ghost" style="padding:2px 10px" title="remove">✕</button></div><textarea rows="4" placeholder="What happened this session?"></textarea>';
+    const titleEl=card.children[0].children[0];
+    const bodyEl=card.children[1];
+    titleEl.value=n.title||''; bodyEl.value=n.body||'';
+    titleEl.oninput=()=>{state.notes[i].title=titleEl.value; saveAll();};
+    bodyEl.oninput=()=>{state.notes[i].body=bodyEl.value; saveAll();};
+    card.children[0].children[1].onclick=()=>{state.notes.splice(i,1); saveAll(); renderNotes();};
+    wrap.appendChild(card);
+  });
+}
+function addNote(){
+  const ds=new Date().toISOString().slice(0,10);
+  state.notes.unshift({title:ds, body:""});
+  saveAll(); renderNotes();
+  const wrap=document.getElementById('noteList');
+  const first=wrap.querySelector('input'); if(first) first.focus();
+}
+function copyNotes(){
+  const txt=state.notes.map(n=>((n.title||'Untitled')+'\n'+(n.body||''))).join('\n\n---\n\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    const tag=document.getElementById('savedTag'); tag.textContent='📋 notes copied'; tag.style.opacity=1;
+    setTimeout(()=>{tag.style.opacity=0; tag.textContent='✓ saved';},1400);
+  }).catch(()=>alert('Copy blocked by browser — select the text and copy manually.'));
+}
+function exportJSON(){
+  const data=JSON.stringify(state,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='elliot-sheet-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+renderNotes();
 </script>
 </body>
 </html>
