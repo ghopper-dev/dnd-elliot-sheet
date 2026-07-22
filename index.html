@@ -48,6 +48,9 @@
   button.ghost{background:transparent;border:1px solid var(--muted);color:var(--muted)}
   a{color:var(--accent)}
   .note{font-size:.8rem;color:var(--muted);text-align:center;margin-top:6px}
+  .note-card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-top:10px}
+  .note-head{display:flex;gap:8px;align-items:center;cursor:pointer;user-select:none}
+  .note-body{max-height:220px;overflow:auto;resize:vertical;margin-top:8px}
   .saved{position:fixed;bottom:14px;right:16px;background:var(--panel2);border:1px solid var(--accent);
     color:var(--accent);padding:6px 14px;border-radius:20px;font-size:.8rem;opacity:0;transition:opacity .4s}
   .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
@@ -469,28 +472,38 @@ renderItems();
 function renderNotes(){
   const wrap=document.getElementById('noteList'); wrap.innerHTML='';
   if(!state.notes.length){
-    wrap.innerHTML='<p class="note" style="margin:6px 0">No notes yet — hit “+ Add session note”.</p>';
+    wrap.innerHTML='<p class="note" style="margin:6px 0">No notes yet — hit "+ Add session note".</p>';
     return;
   }
   state.notes.forEach((n,i)=>{
+    if(typeof n.open==='undefined') n.open=true;
     const card=document.createElement('div');
-    card.style.cssText='background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:10px';
-    card.innerHTML='<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><input placeholder="Session title / date" style="flex:1"><button class="ghost" style="padding:2px 10px" title="remove">✕</button></div><textarea rows="4" placeholder="What happened this session?"></textarea>';
-    const titleEl=card.children[0].children[0];
-    const bodyEl=card.children[1];
+    card.className='note-card';
+    card.innerHTML=
+      '<div class="note-head"><span class="chev" style="flex:none;color:var(--accent);font-size:.9rem">'+(n.open?'▾':'▸')+'</span>'+
+      '<input class="ntitle" placeholder="Session title / date" style="flex:1">'+
+      '<button class="ghost ndel" style="padding:2px 10px" title="remove">✕</button></div>'+
+      '<textarea class="note-body" rows="4" placeholder="What happened this session?"'+(n.open?'':' style="display:none"')+'></textarea>';
+    const head=card.querySelector('.note-head');
+    const titleEl=card.querySelector('.ntitle');
+    const bodyEl=card.querySelector('.note-body');
     titleEl.value=n.title||''; bodyEl.value=n.body||'';
+    head.onclick=(e)=>{
+      if(e.target===titleEl || e.target.closest('.ndel')) return;
+      n.open=!n.open; saveAll(); renderNotes();
+    };
     titleEl.oninput=()=>{state.notes[i].title=titleEl.value; saveAll();};
     bodyEl.oninput=()=>{state.notes[i].body=bodyEl.value; saveAll();};
-    card.children[0].children[1].onclick=()=>{state.notes.splice(i,1); saveAll(); renderNotes();};
+    card.querySelector('.ndel').onclick=(e)=>{e.stopPropagation(); state.notes.splice(i,1); saveAll(); renderNotes();};
     wrap.appendChild(card);
   });
 }
 function addNote(){
   const ds=new Date().toISOString().slice(0,10);
-  state.notes.unshift({title:ds, body:""});
+  state.notes.unshift({title:ds, body:"", open:true});
   saveAll(); renderNotes();
   const wrap=document.getElementById('noteList');
-  const first=wrap.querySelector('input'); if(first) first.focus();
+  const first=wrap.querySelector('.ntitle'); if(first) first.focus();
 }
 function copyNotes(){
   const txt=state.notes.map(n=>((n.title||'Untitled')+'\n'+(n.body||''))).join('\n\n---\n\n');
