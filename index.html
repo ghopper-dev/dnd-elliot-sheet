@@ -90,6 +90,7 @@
     <button class="tab active" id="tabbtn-char" onclick="showTab('char')">🏹 Elliot</button>
     <button class="tab" id="tabbtn-drake" onclick="showTab('drake')">🐉 Drake Companion</button>
     <button class="tab" id="tabbtn-spells" onclick="showTab('spells')">📖 Spellbook</button>
+    <button class="tab" id="tabbtn-bag" onclick="showTab('bag')">🎒 Bag</button>
   </div>
 
   <div id="tab-char">
@@ -256,6 +257,43 @@
     <p class="note" style="margin-top:10px">⚠️ 2024 Ranger is a <b>prepared caster</b> — you can swap spells on a long rest. Slots: 4 / 3 / 2. Casting stat: <b>Wisdom</b>.</p>
   </div>
   </div><!-- /tab-spells -->
+
+  <div id="tab-bag" style="display:none">
+  <div class="grid cols-3">
+    <div class="card">
+      <h2>🎒 Bag</h2>
+      <div class="grid cols-3">
+        <div class="bigstat"><label>Gold</label><input id="Gold"></div>
+        <div class="bigstat"><label>Silver</label><input id="Silver"></div>
+        <div class="bigstat"><label>Copper</label><input id="Copper"></div>
+      </div>
+      <label style="margin-top:14px">Quick add / remove gold</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <button class="ghost" style="padding:5px 12px" onclick="adjGold(-10)">−10</button>
+        <button class="ghost" style="padding:5px 12px" onclick="adjGold(-1)">−1</button>
+        <button class="ghost" style="padding:5px 12px" onclick="adjGold(1)">+1</button>
+        <button class="ghost" style="padding:5px 12px" onclick="adjGold(10)">+10</button>
+        <button class="ghost" style="padding:5px 12px" onclick="adjGold(100)">+100</button>
+      </div>
+    </div>
+    <div class="card" style="grid-column:span 2">
+      <h2>Equipment</h2>
+      <table id="itemTable">
+        <tr><th style="text-align:left">Item</th><th style="width:70px">Qty</th><th style="width:60px"></th></tr>
+      </table>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="newItemName" placeholder="Add an item…" style="flex:1" onkeydown="if(event.key==='Enter')addItem()">
+        <input id="newItemQty" placeholder="Qty" style="width:70px" onkeydown="if(event.key==='Enter')addItem()">
+        <button style="padding:7px 14px" onclick="addItem()">+ Add</button>
+      </div>
+      <p class="note">Items auto-save · click ✕ to remove</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>Explorer's Pack (standard gear)</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin:.3em 0">Backpack · bedroll · mess kit · tinderbox · 10 torches · 10 days rations · waterskin · 50 ft hempen rope — plus: Whisper · Longbow +1 · Shortsword · quiver of 20 arrows · leather armor</p>
+  </div>
+  </div><!-- /tab-bag -->
 </div>
 <div class="saved" id="savedTag">✓ saved</div>
 
@@ -273,7 +311,8 @@ const DEFAULTS = {
   DrakeName:"Drake", DrakeEssence:"fire", DrakeAC:"18", DrakeHP:"50", DrakeSpeed:"40 ft, fly 40 ft",
   DrakeBiteName:"Bite", DrakeBiteAtk:"+7", DrakeBiteDmg:"1d6+4 piercing + 1d6 essence",
   DrakeInfused:"+1d6 essence dmg", DrakeNotes:"",
-  Spells:"Cantrip: Thaumaturgy\n1st: Cure Wounds, Speak with Animals, Hunter's Mark\n2nd: Pass without Trace\n3rd: Nondetection — 8h, can't be detected by divination magic or scrying"
+  Spells:"Cantrip: Thaumaturgy\n1st: Cure Wounds, Speak with Animals, Hunter's Mark\n2nd: Pass without Trace\n3rd: Nondetection — 8h, can't be detected by divination magic or scrying",
+  Gold:"1000", Silver:"0", Copper:"0"
 };
 const ABILITIES = [
   {id:"STR", mod:"+1"}, {id:"DEX", mod:"+4"}, {id:"CON", mod:"+3"},
@@ -301,6 +340,7 @@ try{
   const s = JSON.parse(localStorage.getItem(KEY));
   if(s) state = Object.assign(state, s);
 }catch(e){}
+if(!Array.isArray(state.items)) state.items = [];
 
 function render(){
   Object.keys(DEFAULTS).forEach(k=>{
@@ -374,12 +414,39 @@ function adjHP(d){
   state.HPCurrent=String(next); el.value=String(next); saveAll();
 }
 function showTab(t){
-  ['char','drake','spells'].forEach(x=>{
+  ['char','drake','spells','bag'].forEach(x=>{
     document.getElementById('tab-'+x).style.display = x===t?'':'none';
     document.getElementById('tabbtn-'+x).classList.toggle('active', x===t);
   });
 }
 render();
+
+function adjGold(n){
+  const el=document.getElementById('Gold');
+  const v=Math.max(0,(parseInt(state.Gold)||0)+n);
+  state.Gold=String(v); el.value=String(v); saveAll();
+}
+function renderItems(){
+  const t=document.getElementById('itemTable');
+  t.innerHTML='<tr><th style="text-align:left">Item</th><th style="width:70px">Qty</th><th style="width:60px"></th></tr>';
+  state.items.forEach((it,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td style="text-align:left;padding:4px 6px"></td><td><input style="text-align:center" value=""></td><td style="text-align:center"><button class="ghost" style="padding:2px 8px" title="remove">✕</button></td>';
+    tr.children[0].textContent=it.name;
+    const q=tr.children[1].firstChild; q.value=it.qty;
+    q.oninput=()=>{state.items[i].qty=q.value; saveAll();};
+    tr.children[2].firstChild.onclick=()=>{state.items.splice(i,1); saveAll(); renderItems();};
+    t.appendChild(tr);
+  });
+}
+function addItem(){
+  const n=document.getElementById('newItemName'), q=document.getElementById('newItemQty');
+  const name=n.value.trim(); if(!name) return;
+  state.items.push({name:name, qty:q.value.trim()||"1"});
+  n.value=""; q.value=""; n.focus();
+  saveAll(); renderItems();
+}
+renderItems();
 </script>
 </body>
 </html>
