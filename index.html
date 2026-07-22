@@ -48,9 +48,22 @@
   button.ghost{background:transparent;border:1px solid var(--muted);color:var(--muted)}
   a{color:var(--accent)}
   .note{font-size:.8rem;color:var(--muted);text-align:center;margin-top:6px}
-  .note-card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-top:10px}
-  .note-head{display:flex;gap:8px;align-items:center;cursor:pointer;user-select:none}
-  .note-body{min-height:300px;max-height:70vh;overflow:auto;resize:vertical;margin-top:8px;font-size:1.1rem;line-height:1.6}
+  .notes-wrap{display:flex;gap:14px;align-items:flex-start}
+  .notes-side{width:220px;flex:none;display:flex;flex-direction:column;gap:8px}
+  .notes-side .nrow{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:.95rem;color:var(--ink)}
+  .notes-side .nrow.active{border-color:var(--accent);box-shadow:0 0 12px rgba(127,201,78,.35)}
+  .notes-side .nrow .ndate{display:block;color:var(--muted);font-size:.72rem;margin-bottom:2px}
+  .notes-side .nrow .ndel{float:right;cursor:pointer;color:var(--muted)}
+  .notes-main{flex:1;min-width:0}
+  .notes-main textarea.note-title{font-size:1.2rem;font-weight:bold;margin-bottom:8px}
+  .wysiwig-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .wysiwig-bar button{padding:6px 10px;font-size:.9rem;line-height:1}
+  .note-editor{min-height:320px;max-height:70vh;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--panel2);font-size:1.1rem;line-height:1.6}
+  .note-editor:focus{outline:1px solid var(--accent);box-shadow:0 0 10px rgba(127,201,78,.35)}
+  .note-editor h1,.note-editor h2,.note-editor h3{color:var(--accent);margin:.4em 0 .2em}
+  .note-editor ul,.note-editor ol{margin:.3em 0 .3em 1.2em}
+  .note-empty{color:var(--muted);font-size:.95rem;padding:20px 0}
+  @media(max-width:640px){ .notes-wrap{flex-direction:column} .notes-side{width:100%;flex-direction:row;overflow-x:auto} .notes-side .nrow{flex:none;min-width:140px} }
   .saved{position:fixed;bottom:14px;right:16px;background:var(--panel2);border:1px solid var(--accent);
     color:var(--accent);padding:6px 14px;border-radius:20px;font-size:.8rem;opacity:0;transition:opacity .4s}
   .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
@@ -304,14 +317,18 @@
     <div class="grid cols-3">
       <div class="card" style="grid-column:span 3">
         <h2>📝 Session Notes</h2>
-        <div id="noteList"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <div class="notes-wrap">
+          <div class="notes-side" id="noteSide"></div>
+          <div class="notes-main" id="noteMain"></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
           <button onclick="addNote()">+ Add session note</button>
           <button class="ghost" onclick="copyNotes()">📋 Copy all notes</button>
         </div>
-        <p class="note">Notes auto-save · newest on top · click ✕ to remove</p>
+        <p class="note">Notes auto-save · tap a title to read/edit · ✕ removes</p>
       </div>
     </div>
+  </div>
   </div>
 
 </div>
@@ -469,48 +486,87 @@ function addItem(){
   saveAll(); renderItems();
 }
 renderItems();
+let activeNote = 0;
+function ensureNotes(){ if(!Array.isArray(state.notes)) state.notes=[]; }
 function renderNotes(){
-  const wrap=document.getElementById('noteList'); wrap.innerHTML='';
+  ensureNotes();
+  const side=document.getElementById('noteSide');
+  const main=document.getElementById('noteMain');
   if(!state.notes.length){
-    wrap.innerHTML='<p class="note" style="margin:6px 0">No notes yet — hit "+ Add session note".</p>';
+    side.innerHTML='';
+    main.innerHTML='<p class="note-empty">No notes yet — hit “+ Add session note”.</p>';
     return;
   }
+  if(activeNote>=state.notes.length) activeNote=state.notes.length-1;
+  if(activeNote<0) activeNote=0;
+  side.innerHTML='';
   state.notes.forEach((n,i)=>{
-    if(typeof n.open==='undefined') n.open=true;
-    const card=document.createElement('div');
-    card.className='note-card';
-    card.innerHTML=
-      '<div class="note-head"><span class="chev" title="Expand / collapse" style="flex:none;color:var(--accent);font-size:1rem;cursor:pointer;padding:2px 6px;border:1px solid var(--line);border-radius:6px">'+(n.open?'▾':'▸')+'</span>'+
-      '<input class="ntitle" placeholder="Session title / date" style="flex:1">'+
-      '<button class="ghost ndel" style="padding:2px 10px" title="remove">✕</button></div>'+
-      '<textarea class="note-body" rows="12" placeholder="What happened this session?"'+(n.open?'':' style="display:none"')+'></textarea>';
-    const head=card.querySelector('.note-head');
-    const chev=card.querySelector('.chev');
-    const titleEl=card.querySelector('.ntitle');
-    const bodyEl=card.querySelector('.note-body');
-    titleEl.value=n.title||''; bodyEl.value=n.body||'';
-    const toggle=()=>{ n.open=!n.open; saveAll(); renderNotes(); };
-    chev.onclick=(e)=>{ e.stopPropagation(); toggle(); };
-    titleEl.oninput=()=>{state.notes[i].title=titleEl.value; saveAll();};
-    bodyEl.oninput=()=>{state.notes[i].body=bodyEl.value; saveAll();};
-    card.querySelector('.ndel').onclick=(e)=>{e.stopPropagation(); state.notes.splice(i,1); saveAll(); renderNotes();};
-    wrap.appendChild(card);
+    const row=document.createElement('div');
+    row.className='nrow'+(i===activeNote?' active':'');
+    const date=(n.title&&/^\d{4}-\d{2}-\d{2}$/.test(n.title))?n.title:'';
+    const label=(date? '' : (n.title||'Untitled')) || (date?'Untitled':'');
+    row.innerHTML='<span class="ndel" title="remove">✕</span><span class="ndate">'+(date||'')+'</span>'+escapeHtml(label||'Untitled');
+    row.onclick=(e)=>{ if(e.target.classList.contains('ndel')) return; activeNote=i; renderNotes(); };
+    row.querySelector('.ndel').onclick=(e)=>{ e.stopPropagation(); state.notes.splice(i,1); if(activeNote>=state.notes.length) activeNote=state.notes.length-1; saveAll(); renderNotes(); };
+    side.appendChild(row);
+  });
+  const n=state.notes[activeNote];
+  main.innerHTML=
+    '<input class="note-title" placeholder="Session title / date">'+
+    '<div class="wysiwig-bar">'+
+      '<button onclick="fmt(\'bold\')"><b>B</b></button>'+
+      '<button onclick="fmt(\'italic\')"><i>I</i></button>'+
+      '<button onclick="fmt(\'insertUnorderedList\')">• List</button>'+
+      '<button onclick="fmt(\'insertOrderedList\')">1. List</button>'+
+      '<button onclick="fmt(\'formatBlock\',\'H2\')">H</button>'+
+      '<button onclick="fmt(\'removeFormat\')">⤬</button>'+
+    '</div>'+
+    '<div class="note-editor" contenteditable="true" id="noteEditor"></div>';
+  const titleEl=main.querySelector('.note-title');
+  const ed=main.querySelector('#noteEditor');
+  titleEl.value=n.title||'';
+  ed.innerHTML=n.body||'';
+  titleEl.oninput=()=>{ state.notes[activeNote].title=titleEl.value; saveAll(); renderSideOnly(); };
+  ed.oninput=()=>{ state.notes[activeNote].body=ed.innerHTML; saveAll(); };
+}
+function renderSideOnly(){
+  ensureNotes();
+  const side=document.getElementById('noteSide'); if(!side) return;
+  side.innerHTML='';
+  state.notes.forEach((n,i)=>{
+    const row=document.createElement('div');
+    row.className='nrow'+(i===activeNote?' active':'');
+    const date=(n.title&&/^\d{4}-\d{2}-\d{2}$/.test(n.title))?n.title:'';
+    const label=(date? '' : (n.title||'Untitled'));
+    row.innerHTML='<span class="ndel" title="remove">✕</span><span class="ndate">'+(date||'')+'</span>'+escapeHtml(label||'Untitled');
+    row.onclick=(e)=>{ if(e.target.classList.contains('ndel')) return; activeNote=i; renderNotes(); };
+    row.querySelector('.ndel').onclick=(e)=>{ e.stopPropagation(); state.notes.splice(i,1); if(activeNote>=state.notes.length) activeNote=state.notes.length-1; saveAll(); renderNotes(); };
+    side.appendChild(row);
   });
 }
+function fmt(cmd,val){ document.execCommand(cmd,false,val||null); const ed=document.getElementById('noteEditor'); if(ed){ ed.focus(); state.notes[activeNote].body=ed.innerHTML; saveAll(); } }
+function escapeHtml(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 function addNote(){
+  ensureNotes();
   const ds=new Date().toISOString().slice(0,10);
-  state.notes.unshift({title:ds, body:"", open:true});
+  state.notes.unshift({title:ds, body:""});
+  activeNote=0;
   saveAll(); renderNotes();
-  const wrap=document.getElementById('noteList');
-  const first=wrap.querySelector('.ntitle'); if(first) first.focus();
+  const t=document.querySelector('.note-title'); if(t) t.focus();
 }
 function copyNotes(){
-  const txt=state.notes.map(n=>((n.title||'Untitled')+'\n'+(n.body||''))).join('\n\n---\n\n');
+  ensureNotes();
+  const txt=state.notes.map(n=>{
+    const d=document.createElement('div'); d.innerHTML=(n.body||'');
+    const plain=(d.textContent||'')+(d.querySelector('li')? '' : '');
+    return ((n.title||'Untitled')+'\n'+plain).trim();
+  }).join('\n\n---\n\n');
   navigator.clipboard.writeText(txt).then(()=>{
     const tag=document.getElementById('savedTag'); tag.textContent='📋 notes copied'; tag.style.opacity=1;
     setTimeout(()=>{tag.style.opacity=0; tag.textContent='✓ saved';},1400);
   }).catch(()=>alert('Copy blocked by browser — select the text and copy manually.'));
 }
+renderNotes();
 function exportJSON(){
   const data=JSON.stringify(state,null,2);
   const blob=new Blob([data],{type:'application/json'});
