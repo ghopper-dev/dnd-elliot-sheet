@@ -123,6 +123,11 @@
       <div class="grid cols-3">
         <div class="bigstat"><label>L2 Slots</label><input id="Slots2"></div>
         <div class="bigstat"><label>L2 Left</label><input id="Slots2Left"></div>
+        <div class="bigstat"><label>L3 Slots</label><input id="Slots3"></div>
+      </div>
+      <div class="grid cols-3">
+        <div class="bigstat"><label>L3 Left</label><input id="Slots3Left"></div>
+        <div class="bigstat"><label></label><input style="visibility:hidden"></div>
         <div class="bigstat"><label></label><input style="visibility:hidden"></div>
       </div>
       <label>Spells Known / Prepared</label>
@@ -137,14 +142,14 @@
 const DEFAULTS = {
   CharacterName:"Elliot", PlayerName:"Elliot", ClassLevel:"Level 9", ProfBonus:"+4",
   Inspiration:"0", AC:"17", Initiative:"+4", Speed:"30 ft",
-  HPMax:"52 (64)", HPCurrent:"64", HPTemp:"0", HDTotal:"5", HD:"3", SpellDC:"14",
+  HPMax:"64", HPCurrent:"64", HPTemp:"0", HDTotal:"9", HD:"9", SpellDC:"15",
   PassiveWis:"12",
   Wpn1Name:"Whisper", Wpn1Atk:"+10", Wpn1Dmg:"2d4+5",
   Wpn2Name:"Longbow +1", Wpn2Atk:"+9", Wpn2Dmg:"1d8+5",
   Wpn3Name:"Shortsword", Wpn3Atk:"+6", Wpn3Dmg:"1d6+4",
   Features:"Whisper — custom weapon (stats TBC)\n\nLongbow +1: on hit, deals bonus psychic damage. On a critical hit, also delivers a vicious mockery effect — the target has disadvantage on its attacks.\n\nCompanion: wolf (recruited via Speak with Animals, part of the pack)",
-  Slots1:"2", Slots1Left:"2", Slots2:"2", Slots2Left:"3",
-  Spells:"Thaumaturgy\nCure Wounds\nSpeak with Animals\nPass without Trace\nHunter's Mark"
+  Slots1:"4", Slots1Left:"4", Slots2:"3", Slots2Left:"3", Slots3:"2", Slots3Left:"2",
+  Spells:"Thaumaturgy\nCure Wounds\nSpeak with Animals\nPass without Trace\nHunter's Mark\n\n— 3rd level slot unlocked at L9: choose ONE new ranger spell —\nPopular picks: Conjure Animals, Lightning Arrow, Protection from Energy, Wind Wall\nFull list: https://dnd5e.wikidot.com/spells:ranger"
 };
 const ABILITIES = [
   {id:"STR", mod:"+1"}, {id:"DEX", mod:"+4"}, {id:"CON", mod:"+3"},
