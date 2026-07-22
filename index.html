@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elliot — D&D 5e Character Sheet</title>
+<style>
+  :root{
+    --bg:#14100d; --panel:#1f1a15; --panel2:#262019; --ink:#e8dcc8;
+    --muted:#a89478; --accent:#c9a227; --accent2:#8f3b2f; --line:#3a3128;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;line-height:1.45;padding:16px}
+  h1,h2,h3{font-family:'Palatino Linotype',Palatino,serif;letter-spacing:.04em;margin:.2em 0}
+  h1{color:var(--accent);text-align:center;font-size:1.9rem}
+  .sub{text-align:center;color:var(--muted);margin-bottom:18px}
+  .wrap{max-width:1100px;margin:0 auto}
+  .grid{display:grid;gap:14px}
+  .cols-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .cols-6{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;
+    box-shadow:0 2px 10px rgba(0,0,0,.4)}
+  .card h2{color:var(--accent);font-size:1.05rem;border-bottom:1px solid var(--line);padding-bottom:6px;text-transform:uppercase}
+  label{display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
+  input,textarea,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    border-radius:6px;padding:7px 9px;font:inherit;font-size:.95rem}
+  input:focus,textarea:focus{outline:1px solid var(--accent)}
+  .stat{text-align:center}
+  .stat .mod{font-size:1.7rem;color:var(--accent);font-weight:bold;background:var(--panel2);
+    border:1px solid var(--line);border-radius:10px;padding:6px 0}
+  .stat input{margin-top:6px;text-align:center}
+  .bigstat{text-align:center;padding:6px}
+  .bigstat input{font-size:1.3rem;text-align:center}
+  table{width:100%;border-collapse:collapse;font-size:.92rem}
+  th{color:var(--muted);font-size:.7rem;text-transform:uppercase;text-align:left;padding:4px 6px}
+  td{padding:3px 6px;border-top:1px solid var(--line)}
+  td input{padding:4px 6px;font-size:.9rem}
+  .skill{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:.92rem}
+  .skill .dot{width:12px;height:12px;border-radius:50%;border:1px solid var(--muted);cursor:pointer;flex:none}
+  .skill .dot.prof{background:var(--accent);border-color:var(--accent)}
+  .skill .val{width:34px;text-align:right;color:var(--accent);font-weight:bold}
+  .toolbar{position:sticky;top:0;z-index:5;display:flex;gap:10px;justify-content:center;
+    background:linear-gradient(var(--bg) 75%,transparent);padding:8px 0 14px}
+  button{background:var(--accent2);color:#fff;border:none;border-radius:8px;padding:9px 18px;
+    font:inherit;cursor:pointer}
+  button:hover{filter:brightness(1.15)}
+  button.ghost{background:transparent;border:1px solid var(--muted);color:var(--muted)}
+  a{color:var(--accent)}
+  .note{font-size:.8rem;color:var(--muted);text-align:center;margin-top:6px}
+  .saved{position:fixed;bottom:14px;right:16px;background:var(--panel2);border:1px solid var(--accent);
+    color:var(--accent);padding:6px 14px;border-radius:20px;font-size:.8rem;opacity:0;transition:opacity .4s}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 id="char-title">Elliot</h1>
+  <div class="sub">D&D 5e Character Sheet · <a href="https://dnd5e.wikidot.com/" target="_blank" rel="noopener">rules reference</a></div>
+
+  <div class="toolbar">
+    <button onclick="saveAll(true)">💾 Save</button>
+    <button class="ghost" onclick="resetAll()">↺ Reset to defaults</button>
+  </div>
+
+  <div class="grid cols-3">
+    <div class="card">
+      <h2>Character</h2>
+      <label>Character Name</label><input id="CharacterName">
+      <label>Player</label><input id="PlayerName">
+      <label>Class &amp; Level</label><input id="ClassLevel">
+      <label>Proficiency Bonus</label><input id="ProfBonus">
+      <label>Inspiration</label><input id="Inspiration">
+    </div>
+    <div class="card">
+      <h2>Combat</h2>
+      <div class="grid cols-3">
+        <div class="bigstat"><label>AC</label><input id="AC"></div>
+        <div class="bigstat"><label>Initiative</label><input id="Initiative"></div>
+        <div class="bigstat"><label>Speed</label><input id="Speed"></div>
+      </div>
+      <div class="grid cols-3">
+        <div class="bigstat"><label>HP Max</label><input id="HPMax"></div>
+        <div class="bigstat"><label>HP Current</label><input id="HPCurrent"></div>
+        <div class="bigstat"><label>HP Temp</label><input id="HPTemp"></div>
+      </div>
+      <div class="grid cols-3">
+        <div class="bigstat"><label>Hit Dice Total</label><input id="HDTotal"></div>
+        <div class="bigstat"><label>Hit Dice</label><input id="HD"></div>
+        <div class="bigstat"><label>Spell DC</label><input id="SpellDC"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Attacks</h2>
+      <table>
+        <tr><th>Name</th><th>Atk</th><th>Damage</th></tr>
+        <tr><td><input id="Wpn1Name"></td><td><input id="Wpn1Atk"></td><td><input id="Wpn1Dmg"></td></tr>
+        <tr><td><input id="Wpn2Name"></td><td><input id="Wpn2Atk"></td><td><input id="Wpn2Dmg"></td></tr>
+        <tr><td><input id="Wpn3Name"></td><td><input id="Wpn3Atk"></td><td><input id="Wpn3Dmg"></td></tr>
+      </table>
+      <label>Notes / Features</label>
+      <textarea id="Features" rows="4"></textarea>
+    </div>
+  </div>
+
+  <div class="grid cols-3" style="margin-top:14px">
+    <div class="card">
+      <h2>Ability Scores</h2>
+      <div class="grid cols-6" id="abilities"></div>
+      <h2 style="margin-top:14px">Saving Throws</h2>
+      <div id="saves"></div>
+    </div>
+    <div class="card">
+      <h2>Skills <span style="font-size:.65rem;color:var(--muted)">(click dot = proficient)</span></h2>
+      <div id="skills"></div>
+    </div>
+    <div class="card">
+      <h2>Spellcasting</h2>
+      <div class="grid cols-3">
+        <div class="bigstat"><label>L1 Slots</label><input id="Slots1"></div>
+        <div class="bigstat"><label>L1 Left</label><input id="Slots1Left"></div>
+        <div class="bigstat"><label>Passive Wis</label><input id="PassiveWis"></div>
+      </div>
+      <div class="grid cols-3">
+        <div class="bigstat"><label>L2 Slots</label><input id="Slots2"></div>
+        <div class="bigstat"><label>L2 Left</label><input id="Slots2Left"></div>
+        <div class="bigstat"><label></label><input style="visibility:hidden"></div>
+      </div>
+      <label>Spells Known / Prepared</label>
+      <textarea id="Spells" rows="7"></textarea>
+      <p class="note"><a href="https://dnd5e.wikidot.com/spells" target="_blank" rel="noopener">spell list ↗</a></p>
+    </div>
+  </div>
+</div>
+<div class="saved" id="savedTag">✓ saved</div>
+
+<script>
+const DEFAULTS = {
+  CharacterName:"Elliot", PlayerName:"Elliot", ClassLevel:"Level 7", ProfBonus:"+3",
+  Inspiration:"0", AC:"17", Initiative:"+4", Speed:"30 ft",
+  HPMax:"52 (64)", HPCurrent:"64", HPTemp:"0", HDTotal:"5", HD:"3", SpellDC:"14",
+  PassiveWis:"12",
+  Wpn1Name:"Whisper", Wpn1Atk:"+10", Wpn1Dmg:"2d4+5",
+  Wpn2Name:"Longbow", Wpn2Atk:"+8", Wpn2Dmg:"1d8+4",
+  Wpn3Name:"Shortsword", Wpn3Atk:"+6", Wpn3Dmg:"1d6+4",
+  Features:"",
+  Slots1:"2", Slots1Left:"2", Slots2:"2", Slots2Left:"3",
+  Spells:"Thaumaturgy\nCure Wounds\nSpeak with Animals\nPass without Trace\nHunter's Mark"
+};
+const ABILITIES = [
+  {id:"STR", mod:"+1"}, {id:"DEX", mod:"+4"}, {id:"CON", mod:"+3"},
+  {id:"INT", mod:"-1"}, {id:"WIS", mod:"+2"}, {id:"CHA", mod:"-1"}
+];
+const SAVES = {STR:"1", DEX:"6", CON:"3", INT:"-1", WIS:"6", CHA:"-1"};
+const SAVE_PROF = ["DEX","WIS"];
+const SKILLS = [
+  ["Acrobatics","DEX","4",0],["Animal Handling","WIS","2",0],["Arcana","INT","-1",0],
+  ["Athletics","STR","1",0],["Deception","CHA","-1",0],["History","INT","-1",0],
+  ["Insight","WIS","5",1],["Intimidation","CHA","-1",0],["Investigation","INT","-1",0],
+  ["Medicine","WIS","1",0],["Nature","INT","1",0],["Perception","WIS","5",1],
+  ["Performance","CHA","0",0],["Persuasion","CHA","0",0],["Religion","INT","1",0],
+  ["Sleight of Hand","DEX","4",0],["Stealth","DEX","7",1],["Survival","WIS","5",1]
+];
+const KEY = "elliot-sheet-v1";
+let state = JSON.parse(JSON.stringify(DEFAULTS));
+state.abilities = {}; ABILITIES.forEach(a=>state.abilities[a.id]=a.mod);
+state.saves = Object.assign({}, SAVES);
+state.saveProf = SAVE_PROF.slice();
+state.skills = SKILLS.map(s=>({name:s[0], ab:s[1], val:s[2], prof:!!s[3]}));
+
+// load saved
+try{
+  const s = JSON.parse(localStorage.getItem(KEY));
+  if(s) state = Object.assign(state, s);
+}catch(e){}
+
+function render(){
+  Object.keys(DEFAULTS).forEach(k=>{
+    const el = document.getElementById(k);
+    if(el) el.value = state[k] ?? "";
+  });
+  document.getElementById("char-title").textContent = state.CharacterName || "Character Sheet";
+  // abilities
+  const ab = document.getElementById("abilities"); ab.innerHTML="";
+  ABILITIES.forEach(a=>{
+    const d=document.createElement("div"); d.className="stat";
+    d.innerHTML=`<label>${a.id}</label><div class="mod">${state.abilities[a.id]}</div>`+
+      `<input data-ab="${a.id}" value="${state.abilities[a.id]}">`;
+    ab.appendChild(d);
+  });
+  ab.querySelectorAll("input").forEach(i=>i.addEventListener("input",e=>{
+    state.abilities[e.target.dataset.ab]=e.target.value;
+    e.target.previousElementSibling.textContent=e.target.value; saveAll();
+  }));
+  // saves
+  const sv=document.getElementById("saves"); sv.innerHTML="";
+  ABILITIES.forEach(a=>{
+    const d=document.createElement("div"); d.className="skill";
+    d.innerHTML=`<span class="dot ${state.saveProf.includes(a.id)?'prof':''}" data-save="${a.id}"></span>`+
+      `<span style="flex:1">${a.id} save</span><span class="val">${state.saves[a.id]}</span>`;
+    sv.appendChild(d);
+  });
+  // skills
+  const sk=document.getElementById("skills"); sk.innerHTML="";
+  state.skills.forEach((s,i)=>{
+    const d=document.createElement("div"); d.className="skill";
+    d.innerHTML=`<span class="dot ${s.prof?'prof':''}" data-skill="${i}"></span>`+
+      `<span style="flex:1">${s.name} <small style="color:var(--muted)">(${s.ab})</small></span>`+
+      `<span class="val">${s.val}</span>`;
+    sk.appendChild(d);
+  });
+  document.querySelectorAll("[data-save]").forEach(el=>el.onclick=()=>{
+    const id=el.dataset.save, p=state.saveProf;
+    p.includes(id)?p.splice(p.indexOf(id),1):p.push(id); saveAll(); render();
+  });
+  document.querySelectorAll("[data-skill]").forEach(el=>el.onclick=()=>{
+    const s=state.skills[el.dataset.skill]; s.prof=!s.prof; saveAll(); render();
+  });
+  // bind top fields
+  Object.keys(DEFAULTS).forEach(k=>{
+    const el=document.getElementById(k);
+    if(el) el.oninput=()=>{ state[k]=el.value;
+      if(k==="CharacterName") document.getElementById("char-title").textContent=el.value||"Character Sheet";
+      saveAll(); };
+  });
+}
+let t;
+function saveAll(manual){
+  clearTimeout(t);
+  t=setTimeout(()=>{
+    localStorage.setItem(KEY, JSON.stringify(state));
+    const tag=document.getElementById("savedTag");
+    tag.style.opacity=1; setTimeout(()=>tag.style.opacity=0,1200);
+  }, manual?0:400);
+}
+function resetAll(){
+  if(confirm("Reset the sheet back to the defaults from your PDF? This wipes your saved edits.")){
+    localStorage.removeItem(KEY); location.reload();
+  }
+}
+render();
+</script>
+</body>
+</html>
