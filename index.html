@@ -50,7 +50,7 @@
   .note{font-size:.8rem;color:var(--muted);text-align:center;margin-top:6px}
   .note-card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-top:10px}
   .note-head{display:flex;gap:8px;align-items:center;cursor:pointer;user-select:none}
-  .note-body{max-height:220px;overflow:auto;resize:vertical;margin-top:8px}
+  .note-body{max-height:70vh;overflow:auto;resize:vertical;margin-top:8px}
   .saved{position:fixed;bottom:14px;right:16px;background:var(--panel2);border:1px solid var(--accent);
     color:var(--accent);padding:6px 14px;border-radius:20px;font-size:.8rem;opacity:0;transition:opacity .4s}
   .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
@@ -489,12 +489,13 @@ function renderNotes(){
     const titleEl=card.querySelector('.ntitle');
     const bodyEl=card.querySelector('.note-body');
     titleEl.value=n.title||''; bodyEl.value=n.body||'';
+    bodyEl.style.height='auto'; bodyEl.style.height=Math.min(bodyEl.scrollHeight, window.innerHeight*0.7)+'px';
     head.onclick=(e)=>{
       if(e.target===titleEl || e.target.closest('.ndel')) return;
       n.open=!n.open; saveAll(); renderNotes();
     };
     titleEl.oninput=()=>{state.notes[i].title=titleEl.value; saveAll();};
-    bodyEl.oninput=()=>{state.notes[i].body=bodyEl.value; saveAll();};
+    bodyEl.oninput=()=>{state.notes[i].body=bodyEl.value; bodyEl.style.height='auto'; bodyEl.style.height=Math.min(bodyEl.scrollHeight, window.innerHeight*0.7)+'px'; saveAll();};
     card.querySelector('.ndel').onclick=(e)=>{e.stopPropagation(); state.notes.splice(i,1); saveAll(); renderNotes();};
     wrap.appendChild(card);
   });
