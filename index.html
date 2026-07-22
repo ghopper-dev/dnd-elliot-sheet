@@ -6,14 +6,14 @@
 <title>Elliot — D&D 5e Character Sheet</title>
 <style>
   :root{
-    --bg:#14100d; --panel:#1f1a15; --panel2:#262019; --ink:#e8dcc8;
-    --muted:#a89478; --accent:#c9a227; --accent2:#8f3b2f; --line:#3a3128;
+    --bg:#0e130d; --panel:#16200f; --panel2:#1d2a15; --ink:#e4ecd8;
+    --muted:#93a87e; --accent:#7fc94e; --accent2:#3d6b2a; --line:#33452a;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:Georgia,'Times New Roman',serif;line-height:1.45;padding:16px}
+  body{margin:0;background:radial-gradient(ellipse at top,#14210f 0%,var(--bg) 60%);color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;line-height:1.45;padding:16px;min-height:100vh}
   h1,h2,h3{font-family:'Palatino Linotype',Palatino,serif;letter-spacing:.04em;margin:.2em 0}
-  h1{color:var(--accent);text-align:center;font-size:1.9rem}
+  h1{color:var(--accent);text-align:center;font-size:1.9rem;text-shadow:0 0 18px rgba(127,201,78,.45),0 0 40px rgba(127,201,78,.2)}
   .sub{text-align:center;color:var(--muted);margin-bottom:18px}
   .wrap{max-width:1100px;margin:0 auto}
   .grid{display:grid;gap:14px}
@@ -21,11 +21,11 @@
   .cols-6{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;
     box-shadow:0 2px 10px rgba(0,0,0,.4)}
-  .card h2{color:var(--accent);font-size:1.05rem;border-bottom:1px solid var(--line);padding-bottom:6px;text-transform:uppercase}
+  .card h2{color:var(--accent);font-size:1.05rem;border-bottom:1px solid var(--line);padding-bottom:6px;text-transform:uppercase;text-shadow:0 0 10px rgba(127,201,78,.35)}
   label{display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
   input,textarea,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
     border-radius:6px;padding:7px 9px;font:inherit;font-size:.95rem}
-  input:focus,textarea:focus{outline:1px solid var(--accent)}
+  input:focus,textarea:focus{outline:1px solid var(--accent);box-shadow:0 0 10px rgba(127,201,78,.35)}
   .stat{text-align:center}
   .stat .mod{font-size:1.7rem;color:var(--accent);font-weight:bold;background:var(--panel2);
     border:1px solid var(--line);border-radius:10px;padding:6px 0}
@@ -52,15 +52,15 @@
     color:var(--accent);padding:6px 14px;border-radius:20px;font-size:.8rem;opacity:0;transition:opacity .4s}
   .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
   .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted)}
-  .tab.active{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+  .tab.active{background:var(--accent2);color:#fff;border-color:var(--accent);box-shadow:0 0 14px rgba(127,201,78,.4)}
+  .hpbtn{width:44px;height:44px;border-radius:50%;font-size:1.4rem;padding:0;line-height:1}
+  .hpbtn.heal{background:var(--accent2);box-shadow:0 0 12px rgba(127,201,78,.35)}
   select{appearance:auto}
   .hpbar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
     background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin-bottom:16px}
   .hpbar .hplabel{color:var(--accent);font-size:1.05rem;text-transform:uppercase;letter-spacing:.06em}
   .hpbar input{width:74px;text-align:center;font-size:1.35rem;padding:6px}
   .hpbar .slash{color:var(--muted);font-size:1.3rem}
-  .hpbtn{width:44px;height:44px;border-radius:50%;font-size:1.4rem;padding:0;line-height:1}
-  .hpbtn.heal{background:#2f5d3a}
   .hpbar .hptemp{width:70px;font-size:1rem}
   .hpbar .small{font-size:.72rem;color:var(--muted);text-transform:uppercase}
 </style>
