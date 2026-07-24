@@ -380,7 +380,44 @@
     background: var(--accent2);
     color: #fff;
     border-color: var(--accent);
-    box-shadow: 0 0 14px rgba(127, 201, 78, .4)
+    box-shadow: 0 0 14px rgba(127, 201, 78, .3)
+  }
+
+  /* Pixel-art tab icons (crisp, no smoothing) */
+  .tabicon {
+    width: 22px;
+    height: 22px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    vertical-align: -4px;
+    margin-right: 4px
+  }
+
+  /* Placeholder for tabs awaiting custom pixel-art icons */
+  .tabplaceholder {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: .7rem;
+    font-weight: bold;
+    color: var(--muted);
+    background: var(--panel2);
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    margin-right: 5px;
+    vertical-align: -3px
+  }
+
+  /* HP heart icon */
+  .hpicon {
+    width: 26px;
+    height: 26px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    margin-right: 6px;
+    vertical-align: -6px
   }
 
   .hpbtn {
