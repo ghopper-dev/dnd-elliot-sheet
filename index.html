@@ -9,8 +9,19 @@
 </head>
 <body>
 <div class="wrap">
-  <h1 id="char-title">Elliot</h1>
-  <div class="sub">D&D 5e Character Sheet · <a href="https://dnd5e.wikidot.com/" target="_blank" rel="noopener">rules reference</a></div>
+  <div class="hero">
+    <div class="hero-name">
+      <img class="hero-bow" src="icons/bow-pixel2.png" alt="">
+      <h1 id="char-title">Elliot</h1>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><label>Level</label><input id="CharLevel" placeholder="X"></div>
+      <div class="hstat"><label>Initiative</label><input id="Initiative" placeholder="X"></div>
+      <div class="hstat"><label>Class &amp; Level</label><input id="ClassLevel" placeholder="XXXXX"></div>
+      <div class="hstat"><label>Background</label><input id="Background" placeholder="XXXXX"></div>
+      <div class="hstat"><label>Race</label><input id="Race" placeholder="XXXXX"></div>
+    </div>
+  </div>
 
   <div class="toolbar">
     <button onclick="saveAll(true)"> Save</button>
@@ -45,7 +56,6 @@
       <h2>Character</h2>
       <label>Character Name</label><input id="CharacterName">
       <label>Player</label><input id="PlayerName">
-      <label>Class &amp; Level</label><input id="ClassLevel">
       <label>Proficiency Bonus</label><input id="ProfBonus">
       <label>Inspiration</label><input id="Inspiration">
     </div>
@@ -53,11 +63,10 @@
       <h2>Combat</h2>
       <div class="grid cols-3">
         <div class="bigstat"><label>AC</label><input id="AC"></div>
-        <div class="bigstat"><label>Initiative</label><input id="Initiative"></div>
         <div class="bigstat"><label>Speed</label><input id="Speed"></div>
+        <div class="bigstat"><label>Hit Dice Total</label><input id="HDTotal"></div>
       </div>
       <div class="grid cols-3">
-        <div class="bigstat"><label>Hit Dice Total</label><input id="HDTotal"></div>
         <div class="bigstat"><label>Hit Dice</label><input id="HD"></div>
         <div class="bigstat"><label>Spell DC</label><input id="SpellDC"></div>
       </div>
