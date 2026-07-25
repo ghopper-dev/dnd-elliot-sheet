@@ -2,11 +2,13 @@
     --bg: #0e130d;
     --panel: #16200f;
     --panel2: #1d2a15;
+    --panel3: #22341b;
     --ink: #e4ecd8;
     --muted: #93a87e;
     --accent: #7fc94e;
     --accent2: #3d6b2a;
     --line: #33452a;
+    --gold: #b39a51;
   }
 
   * {
@@ -15,11 +17,13 @@
 
   body {
     margin: 0;
-    background: radial-gradient(ellipse at top, #14210f 0%, var(--bg) 60%);
+    background:
+      radial-gradient(circle at top, rgba(127, 201, 78, .08), transparent 34%),
+      linear-gradient(180deg, #151817 0%, #111311 100%);
     color: var(--ink);
     font-family: Georgia, 'Times New Roman', serif;
     line-height: 1.45;
-    padding: 16px;
+    padding: 18px;
     min-height: 100vh
   }
 
@@ -45,31 +49,40 @@
   }
 
   .wrap {
-    max-width: 1100px;
+    max-width: 1240px;
     margin: 0 auto
   }
 
-  /* Hero banner (Figma-inspired: name + key stats strip) */
+  .sheet-shell {
+    border: 1px solid #445739;
+    background: #11180d;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, .42), inset 0 0 0 1px rgba(127, 201, 78, .08);
+  }
+
+  .sheet-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: start;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid rgba(127, 201, 78, .15);
+    background: linear-gradient(180deg, rgba(31, 45, 24, .96), rgba(21, 30, 16, .98));
+  }
+
   .hero {
-    background: linear-gradient(180deg, var(--panel2), var(--panel));
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--accent);
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, .45)
+    min-width: 0
   }
 
   .hero-name {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 12px
+    gap: 12px;
+    margin-bottom: 10px
   }
 
   .hero-bow {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     image-rendering: pixelated;
     image-rendering: crisp-edges
   }
@@ -77,33 +90,49 @@
   .hero h1 {
     text-align: left;
     margin: 0;
-    font-size: 2.1rem;
-    color: var(--ink);
-    text-shadow: 0 0 18px rgba(127, 201, 78, .35)
+    font-size: 1.75rem;
+    color: #f0f3df;
+    text-shadow: none
+  }
+
+  .hero-sub {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: .76rem;
+    letter-spacing: .08em;
+    text-transform: uppercase
   }
 
   .hero-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px
   }
 
   .hero-stats .hstat label {
     color: var(--muted);
-    font-size: .68rem;
+    font-size: .6rem;
     text-transform: uppercase;
-    letter-spacing: .07em
+    letter-spacing: .08em;
+    margin: 0 0 2px
   }
 
   .hero-stats .hstat input {
-    margin-top: 3px;
-    background: var(--bg);
-    border: 1px solid var(--line);
+    margin-top: 0;
+    background: rgba(11, 17, 9, .92);
+    border: 1px solid rgba(115, 145, 88, .35);
     color: var(--ink);
-    border-radius: 6px;
-    padding: 7px 9px;
+    border-radius: 0;
+    padding: 6px 7px;
     font: inherit;
-    font-size: .95rem
+    font-size: .82rem;
+    min-height: 32px
+  }
+
+  .head-side {
+    display: grid;
+    gap: 10px;
+    min-width: 260px
   }
 
   .grid {
@@ -120,20 +149,21 @@
   }
 
   .card {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(22, 31, 16, .92), rgba(14, 21, 11, .92));
+    border: 1px solid rgba(77, 100, 60, .55);
+    border-radius: 0;
     padding: 14px 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, .4)
+    box-shadow: inset 0 0 0 1px rgba(127, 201, 78, .04)
   }
 
   .card h2 {
     color: var(--accent);
-    font-size: 1.05rem;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 6px;
+    font-size: .92rem;
+    border-bottom: 1px solid rgba(127, 201, 78, .16);
+    padding-bottom: 8px;
     text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(127, 201, 78, .35)
+    text-shadow: none;
+    letter-spacing: .08em
   }
 
   label {
@@ -149,13 +179,13 @@
   textarea,
   select {
     width: 100%;
-    background: var(--panel2);
-    border: 1px solid var(--line);
+    background: rgba(9, 14, 8, .9);
+    border: 1px solid rgba(90, 115, 67, .48);
     color: var(--ink);
-    border-radius: 6px;
+    border-radius: 0;
     padding: 7px 9px;
     font: inherit;
-    font-size: .95rem
+    font-size: .93rem
   }
 
   input:focus,
@@ -247,23 +277,22 @@
   }
 
   .toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 5;
     display: flex;
-    gap: 10px;
-    justify-content: center;
-    background: linear-gradient(var(--bg) 75%, transparent);
-    padding: 8px 0 14px
+    gap: 8px;
+    justify-content: flex-end;
+    flex-wrap: wrap
   }
 
   button {
     background: var(--accent2);
     color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 9px 18px;
+    border: 1px solid rgba(127, 201, 78, .28);
+    border-radius: 0;
+    padding: 8px 14px;
     font: inherit;
+    font-size: .84rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
     cursor: pointer
   }
 
@@ -272,8 +301,8 @@
   }
 
   button.ghost {
-    background: transparent;
-    border: 1px solid var(--muted);
+    background: rgba(12, 18, 9, .7);
+    border: 1px solid rgba(147, 168, 126, .32);
     color: var(--muted)
   }
 
@@ -423,21 +452,33 @@
   .tabs {
     display: flex;
     gap: 8px;
-    justify-content: center;
-    margin-bottom: 16px
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    padding: 0 16px;
+    margin: 0;
+    border-bottom: 1px solid rgba(127, 201, 78, .22);
+    background: linear-gradient(180deg, rgba(17, 24, 13, .98), rgba(14, 19, 11, .98))
   }
 
   .tab {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    color: var(--muted)
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    margin-bottom: -1px;
+    background: rgba(12, 18, 9, .85);
+    border: 1px solid rgba(80, 103, 62, .6);
+    border-bottom-color: rgba(127, 201, 78, .4);
+    color: #c4d3b3;
+    padding: 7px 12px;
+    min-height: 38px
   }
 
   .tab.active {
-    background: var(--accent2);
-    color: #fff;
-    border-color: var(--accent);
-    box-shadow: 0 0 14px rgba(127, 201, 78, .3)
+    background: linear-gradient(180deg, rgba(50, 80, 31, .95), rgba(29, 48, 19, .96));
+    color: #f2f5e6;
+    border-color: rgba(127, 201, 78, .72);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06)
   }
 
   /* Pixel-art tab icons (crisp, no smoothing) */
@@ -459,11 +500,11 @@
     text-align: center;
     font-size: .7rem;
     font-weight: bold;
-    color: var(--muted);
-    background: var(--panel2);
-    border: 1px dashed var(--line);
-    border-radius: 4px;
-    margin-right: 5px;
+    color: var(--gold);
+    background: rgba(14, 20, 10, .95);
+    border: 1px solid rgba(179, 154, 81, .55);
+    border-radius: 0;
+    margin-right: 2px;
     vertical-align: -3px
   }
 
@@ -478,10 +519,10 @@
   }
 
   .hpbtn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    font-size: 1.4rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    font-size: 1rem;
     padding: 0;
     line-height: 1
   }
@@ -498,14 +539,14 @@
   .hpbar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 12px;
+    justify-content: flex-end;
+    gap: 8px;
     flex-wrap: wrap;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 10px 16px;
-    margin-bottom: 16px
+    background: rgba(11, 17, 9, .78);
+    border: 1px solid rgba(82, 104, 64, .56);
+    border-radius: 0;
+    padding: 8px 10px;
+    margin: 0
   }
 
   .hpbar .hplabel {
@@ -516,10 +557,10 @@
   }
 
   .hpbar input {
-    width: 74px;
+    width: 56px;
     text-align: center;
-    font-size: 1.35rem;
-    padding: 6px
+    font-size: 1rem;
+    padding: 5px 6px
   }
 
   .hpbar .slash {
@@ -528,12 +569,56 @@
   }
 
   .hpbar .hptemp {
-    width: 70px;
-    font-size: 1rem
+    width: 48px;
+    font-size: .88rem
   }
 
   .hpbar .small {
     font-size: .72rem;
     color: var(--muted);
     text-transform: uppercase
+  }
+
+  .sheet-stage {
+    min-height: 70vh;
+    padding: 18px 16px 20px;
+    background:
+      linear-gradient(rgba(10, 16, 8, .55), rgba(10, 16, 8, .55)),
+      radial-gradient(circle at 20% 15%, rgba(138, 178, 111, .07), transparent 30%),
+      radial-gradient(circle at 85% 10%, rgba(138, 178, 111, .06), transparent 22%),
+      linear-gradient(180deg, rgba(34, 58, 38, .96), rgba(25, 43, 25, .97));
+    position: relative;
+  }
+
+  .sheet-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, .018), rgba(255, 255, 255, .018) 1px, transparent 1px, transparent 4px),
+      repeating-linear-gradient(90deg, rgba(0, 0, 0, .02), rgba(0, 0, 0, .02) 1px, transparent 1px, transparent 5px);
+    mix-blend-mode: soft-light;
+    opacity: .35;
+  }
+
+  .sheet-stage > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media(max-width:980px) {
+    .sheet-head {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-stats {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .head-side,
+    .toolbar,
+    .hpbar {
+      justify-content: flex-start;
+    }
   }

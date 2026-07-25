@@ -9,36 +9,44 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="hero">
-    <div class="hero-name">
-      <img class="hero-bow" src="icons/bow-pixel2.png" alt="">
-      <h1 id="char-title">Elliot</h1>
+  <div class="sheet-shell">
+  <div class="sheet-head">
+    <div class="hero">
+      <div class="hero-name">
+        <img class="hero-bow" src="icons/bow-pixel2.png" alt="">
+        <div>
+          <h1 id="char-title">Elliot</h1>
+          <p class="hero-sub">D&D 5e character sheet</p>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><label>Level</label><input id="CharLevel" placeholder="X"></div>
+        <div class="hstat"><label>Initiative</label><input id="Initiative" placeholder="X"></div>
+        <div class="hstat"><label>Class &amp; Level</label><input id="ClassLevel" placeholder="XXXXX"></div>
+        <div class="hstat"><label>Background</label><input id="Background" placeholder="XXXXX"></div>
+        <div class="hstat"><label>Race</label><input id="Race" placeholder="XXXXX"></div>
+      </div>
     </div>
-    <div class="hero-stats">
-      <div class="hstat"><label>Level</label><input id="CharLevel" placeholder="X"></div>
-      <div class="hstat"><label>Initiative</label><input id="Initiative" placeholder="X"></div>
-      <div class="hstat"><label>Class &amp; Level</label><input id="ClassLevel" placeholder="XXXXX"></div>
-      <div class="hstat"><label>Background</label><input id="Background" placeholder="XXXXX"></div>
-      <div class="hstat"><label>Race</label><input id="Race" placeholder="XXXXX"></div>
+
+    <div class="head-side">
+      <div class="toolbar">
+        <button onclick="saveAll(true)">Save</button>
+        <button class="ghost" onclick="resetAll()">Reset</button>
+        <button class="ghost" onclick="exportJSON()">Export JSON</button>
+      </div>
+
+      <div class="hpbar">
+        <img class="hpicon" src="icons/heart-pixel.png" alt="HP">
+        <span class="hplabel">HP</span>
+        <button class="hpbtn" onclick="adjHP(-1)">−</button>
+        <input id="HPCurrent">
+        <span class="slash">/</span>
+        <input id="HPMax">
+        <button class="hpbtn heal" onclick="adjHP(1)">+</button>
+        <span class="small">Temp</span>
+        <input id="HPTemp" class="hptemp" placeholder="0">
+      </div>
     </div>
-  </div>
-
-  <div class="toolbar">
-    <button onclick="saveAll(true)"> Save</button>
-    <button class="ghost" onclick="resetAll()">↺ Reset to defaults</button>
-    <button class="ghost" onclick="exportJSON()">⤓ Export JSON</button>
-  </div>
-
-  <div class="hpbar">
-    <img class="hpicon" src="icons/heart-pixel.png" alt="HP">
-    <span class="hplabel">HP</span>
-    <button class="hpbtn" onclick="adjHP(-1)">−</button>
-    <input id="HPCurrent">
-    <span class="slash">/</span>
-    <input id="HPMax">
-    <button class="hpbtn heal" onclick="adjHP(1)">+</button>
-    <span class="small">Temp</span>
-    <input id="HPTemp" class="hptemp" placeholder="0">
   </div>
 
   <div class="tabs">
@@ -49,6 +57,7 @@
     <button class="tab" id="tabbtn-notes" onclick="showTab('notes')"><span class="tabplaceholder">N</span> Session Notes</button>
   </div>
 
+  <div class="sheet-stage">
   <div id="tab-char">
 
   <div class="grid cols-3">
@@ -264,6 +273,8 @@
         <p class="note">Notes auto-save · tap a title to read/edit · ✕ removes</p>
       </div>
     </div>
+  </div>
+
   </div>
   </div>
 
