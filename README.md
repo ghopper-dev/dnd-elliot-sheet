@@ -10,7 +10,7 @@ This one is built for Elliot (a Level 9 Drakewarden Ranger), but it's plain HTML
 
 ## What it does
 
-- **Tabs:** Elliot · 🐉 Drake Companion · 📖 Spellbook · 🎒 Bag · 📝 Session Notes
+- **Tabs:** Elliot · Drake Companion · Spellbook · Bag · Session Notes, with pixel-art icons
 - **HP tracker** pinned to the top with big −/+ buttons (clamped 0–max)
 - **Auto-saves** everything to your browser as you type (the ✓ saved tag flashes)
 - **Spellbook** with 2024-rule notes where they differ from legacy text
@@ -32,10 +32,10 @@ Session notes tip: hit **+ Add session note** after each game. The title pre-fil
 
 ## Make it yours (fork it)
 
-This is just one HTML file. To run your own character:
+This is plain HTML/CSS/JS. To run your own character:
 
 1. Fork / copy the repo.
-2. Open `index.html` and edit the `DEFAULTS` object near the bottom of the `<script>` — character name, stats, HP, spells, features, gold, etc. Every `DEFAULTS` key needs a matching element `id` in the HTML, so add new fields carefully.
+2. Open `app.js` and edit the `DEFAULTS` object — character name, stats, HP, spells, features, gold, etc. Every `DEFAULTS` key needs a matching element `id` in the HTML, so add new fields carefully.
 3. For a different companion, duplicate the `drake` tab block and prefix new data keys (e.g. `DrakeName` → `WolfName`).
 4. Push to your own GitHub repo and enable **Pages** (Settings → Pages → deploy from `main` / root) to get a shareable link.
 
@@ -63,9 +63,10 @@ The next step is wiring the sheet to a **Google Sheet as a backend** (the page b
 
 ## Tech notes
 
-- Single `index.html`, no build step, no dependencies
+- Static `index.html` + `style.css` + `app.js`, no build step, no runtime dependencies
 - `state` is a flat object; `localStorage` key `elliot-sheet-v1`
 - Tabs toggle `<div>` visibility; list features (bag, notes) rebuild from `state` on render
+- Some tab icons are from HackerNoon's Pixel Icon Library (MIT); license copy included in `icons/HackerNoon-Pixel-Icon-Library-LICENSE`
 - Hosted free on GitHub Pages
 
 Built by Ghopper for Kate. Fork freely.
