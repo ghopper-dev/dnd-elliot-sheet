@@ -1,5 +1,5 @@
 const DEFAULTS = {
-  CharacterName:"Elliot", CharLevel:"9", PlayerName:"Elliot", ClassLevel:"Ranger (Drakewarden) 9", ProfBonus:"+4",
+  CharacterName:"Elliot", CharLevel:"9", PlayerName:"Elliot", ClassLevel:"Ranger (Drakewarden) 9", Background:"XXXXX", Race:"XXXXX", ProfBonus:"+4",
   Inspiration:"0", AC:"17", Initiative:"+4", Speed:"30 ft",
   HPMax:"64", HPCurrent:"64", HPTemp:"0", HDTotal:"9", HD:"9", SpellDC:"15",
   PassiveWis:"12",

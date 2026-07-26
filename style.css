@@ -622,3 +622,182 @@
       justify-content: flex-start;
     }
   }
+
+/* Figma cleanup pass: frame-like header, large HP controls, tab rail, textured play area. */
+body {
+  padding: 0;
+  background:
+    radial-gradient(circle at 18% 4%, rgba(234, 255, 202, .08), transparent 22%),
+    radial-gradient(circle at 84% 8%, rgba(127, 201, 78, .05), transparent 24%),
+    #0e180b;
+}
+
+.wrap { max-width: 1024px; min-height: 100vh; }
+
+.sheet-shell {
+  min-height: 100vh;
+  border: 1px solid rgba(7, 11, 5, .85);
+  background: #111e0f;
+  box-shadow: 0 18px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(127,201,78,.05);
+}
+
+.sheet-head {
+  gap: 28px;
+  padding: 42px 66px 30px;
+  border-bottom: 0;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(223,255,188,.06), transparent 24%),
+    linear-gradient(180deg, rgba(20,34,17,.99), rgba(15,26,12,.99));
+}
+
+.hero-bow { display:none; }
+.hero h1 {
+  font-size: 2.75rem;
+  line-height: 1;
+  color: #f3f0c5;
+  text-shadow: none;
+}
+.hero-sub { display:none; }
+.hero-name { margin-bottom: 10px; }
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  max-width: 620px;
+}
+.hero-stats .hstat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.hero-stats .hstat label {
+  color: #f3f0c5;
+  font-size: 1.08rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+.hero-stats .hstat input {
+  width: auto;
+  min-width: 34px;
+  max-width: 190px;
+  background: transparent;
+  border: 0;
+  color: #f3f0c5;
+  padding: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  min-height: 0;
+  box-shadow: none;
+}
+.hero-stats .hstat input:focus {
+  outline: 1px solid rgba(127,201,78,.85);
+  outline-offset: 3px;
+  background: rgba(6,12,5,.5);
+}
+.head-side { gap: 24px; min-width: 350px; justify-items: end; }
+.toolbar .ghost { padding: 6px 10px; font-size: .66rem; opacity: .78; }
+button.save-primary {
+  min-width: 170px;
+  padding: 11px 24px;
+  background: rgba(128,128,128,.82);
+  border: 0;
+  color: #f3f0c5;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  box-shadow: none;
+}
+
+.hpbar { gap: 12px; background: transparent; border: 0; padding: 0; }
+.hpicon { width: 38px; height: 38px; }
+.hpbar .hplabel,
+.hpbar .small,
+.hpbar .hptemp { display:none; }
+.hpbtn,
+.hpbtn.heal {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  font-size: 1.7rem;
+  font-weight: 700;
+  padding: 0;
+  line-height: 1;
+  color: #82d95b;
+  background: transparent;
+  border: 1px solid #72ca4b;
+  box-shadow: none;
+}
+.hpbar input {
+  width: 64px;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #f3f0c5;
+  background: rgba(50,72,43,.55);
+  border: 0;
+  padding: 7px 6px;
+  border-radius: 10px;
+}
+.hpbar .slash { color:#f3f0c5; font-size:1.9rem; font-weight:700; }
+
+.tabs {
+  gap: 20px;
+  padding: 0 60px;
+  border-bottom: 3px solid #72ca4b;
+  background: #132610;
+}
+.tab {
+  margin-bottom: -3px;
+  min-width: 150px;
+  justify-content: center;
+  background: rgba(23,40,16,.86);
+  border: 2px solid #72ca4b;
+  border-bottom-color: #72ca4b;
+  color: #f3f0c5;
+  padding: 9px 18px;
+  min-height: 44px;
+  font-size: 1.22rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.tab.active {
+  background: rgba(25,43,18,.98);
+  color: #f3f0c5;
+  border-color: #72ca4b;
+  box-shadow: 0 -1px 10px rgba(127,201,78,.18);
+}
+.tabicon { width:24px; height:24px; }
+
+.sheet-stage {
+  padding: 28px 60px 42px;
+  background:
+    linear-gradient(rgba(23,52,35,.70), rgba(18,43,30,.74)),
+    url('assets/figma-green-texture.jpg') center top / cover repeat-y,
+    linear-gradient(180deg, #254434, #173124);
+}
+
+@media(max-width:980px) {
+  .sheet-head { padding: 28px 24px 24px; }
+  .hero-stats { max-width: none; }
+  .head-side { min-width: 0; justify-items: start; }
+  .tabs, .sheet-stage { padding-left: 24px; padding-right: 24px; }
+  .tabs { gap: 10px; }
+  .tab { min-width: 140px; }
+}
+
+@media(max-width:640px) {
+  .hero h1 { font-size: 2.25rem; }
+  .hero-stats { gap: 8px 16px; }
+  .hero-stats .hstat label,
+  .hero-stats .hstat input { font-size: .98rem; }
+  button.save-primary { width: 100%; }
+  .hpbar { justify-content: flex-start; }
+  .hpbar input { width: 56px; font-size: 1.35rem; }
+  .hpbtn, .hpbtn.heal { width: 40px; height: 40px; }
+  .tab { flex: 1 1 calc(50% - 10px); min-width: 132px; }
+}
