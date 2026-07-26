@@ -20,29 +20,29 @@
         </div>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><label>Level</label><input id="CharLevel" placeholder="X"></div>
-        <div class="hstat"><label>Initiative</label><input id="Initiative" placeholder="X"></div>
-        <div class="hstat"><label>Class &amp; Level</label><input id="ClassLevel" placeholder="XXXXX"></div>
-        <div class="hstat"><label>Background</label><input id="Background" placeholder="XXXXX"></div>
-        <div class="hstat"><label>Race</label><input id="Race" placeholder="XXXXX"></div>
+        <div class="hstat"><label>Level:</label><input id="CharLevel" placeholder="X"></div>
+        <div class="hstat"><label>Initiative:</label><input id="Initiative" placeholder="X"></div>
+        <div class="hstat wide"><label>Class:</label><input id="ClassLevel" placeholder="XXXXX"></div>
+        <div class="hstat"><label>Background:</label><input id="Background" placeholder="XXXXX"></div>
+        <div class="hstat"><label>Race:</label><input id="Race" placeholder="XXXXX"></div>
       </div>
     </div>
 
     <div class="head-side">
       <div class="toolbar">
-        <button onclick="saveAll(true)">Save</button>
+        <button class="save-primary" onclick="saveAll(true)"><span aria-hidden="true">💾</span> Save</button>
         <button class="ghost" onclick="resetAll()">Reset</button>
         <button class="ghost" onclick="exportJSON()">Export JSON</button>
       </div>
 
       <div class="hpbar">
-        <img class="hpicon" src="icons/heart-pixel.png" alt="HP">
+        <img class="hpicon" src="assets/figma-heart-icon.jpg" alt="HP">
         <span class="hplabel">HP</span>
-        <button class="hpbtn" onclick="adjHP(-1)">−</button>
+        <button class="hpbtn heal" aria-label="Add HP" onclick="adjHP(1)">+</button>
         <input id="HPCurrent">
         <span class="slash">/</span>
         <input id="HPMax">
-        <button class="hpbtn heal" onclick="adjHP(1)">+</button>
+        <button class="hpbtn" aria-label="Remove HP" onclick="adjHP(-1)">−</button>
         <span class="small">Temp</span>
         <input id="HPTemp" class="hptemp" placeholder="0">
       </div>
@@ -50,11 +50,11 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" id="tabbtn-char" onclick="showTab('char')"><img class="tabicon" src="icons/bow-pixel2.png" alt=""> Elliot</button>
-    <button class="tab" id="tabbtn-drake" onclick="showTab('drake')"><img class="tabicon" src="icons/drake-fire.svg" alt=""> Drake Companion</button>
-    <button class="tab" id="tabbtn-spells" onclick="showTab('spells')"><img class="tabicon" src="icons/spellbook-pixel.svg" alt=""> Spellbook</button>
+    <button class="tab active" id="tabbtn-char" onclick="showTab('char')"><img class="tabicon" src="assets/figma-bow-tab-icon.jpg" alt=""> Elliot</button>
+    <button class="tab" id="tabbtn-drake" onclick="showTab('drake')"><img class="tabicon" src="icons/drake-fire.svg" alt=""> Drake</button>
+    <button class="tab" id="tabbtn-spells" onclick="showTab('spells')"><img class="tabicon" src="icons/spellbook-pixel.svg" alt=""> Spells</button>
     <button class="tab" id="tabbtn-bag" onclick="showTab('bag')"><img class="tabicon" src="icons/bag-pixel.svg" alt=""> Bag</button>
-    <button class="tab" id="tabbtn-notes" onclick="showTab('notes')"><img class="tabicon" src="icons/notes-pixel.svg" alt=""> Session Notes</button>
+    <button class="tab" id="tabbtn-notes" onclick="showTab('notes')"><img class="tabicon" src="icons/notes-pixel.svg" alt=""> Notes</button>
   </div>
 
   <div class="sheet-stage">
