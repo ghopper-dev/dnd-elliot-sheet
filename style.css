@@ -583,8 +583,9 @@
     min-height: 70vh;
     padding: 18px 16px 20px;
     background:
-      linear-gradient(rgba(10, 16, 8, .38), rgba(10, 16, 8, .38)),
-      url("assets/figma-bg.png") center top / cover no-repeat,
+      linear-gradient(rgba(10, 16, 8, .55), rgba(10, 16, 8, .55)),
+      radial-gradient(circle at 20% 15%, rgba(138, 178, 111, .07), transparent 30%),
+      radial-gradient(circle at 85% 10%, rgba(138, 178, 111, .06), transparent 22%),
       linear-gradient(180deg, rgba(34, 58, 38, .96), rgba(25, 43, 25, .97));
     position: relative;
   }
@@ -595,9 +596,10 @@
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(circle at 50% 22%, rgba(214, 236, 196, .08), transparent 35%),
-      linear-gradient(180deg, rgba(0, 0, 0, .08), rgba(0, 0, 0, .18));
-    opacity: .9;
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, .018), rgba(255, 255, 255, .018) 1px, transparent 1px, transparent 4px),
+      repeating-linear-gradient(90deg, rgba(0, 0, 0, .02), rgba(0, 0, 0, .02) 1px, transparent 1px, transparent 5px);
+    mix-blend-mode: soft-light;
+    opacity: .35;
   }
 
   .sheet-stage > * {
