@@ -1,803 +1,805 @@
+/* ============================================================
+   Elliot — D&D 5e Character Sheet
+   Design source: Figma "DND" / Desktop View (node 1:27)
+   ------------------------------------------------------------
+   One layer only. Tokens come straight from the Figma frame, so
+   if a value changes in the design you change it in :root here
+   and nowhere else.
+   ============================================================ */
+
 :root {
-    --bg: #0e130d;
-    --panel: #16200f;
-    --panel2: #1d2a15;
-    --panel3: #22341b;
-    --ink: #e4ecd8;
-    --muted: #93a87e;
-    --accent: #7fc94e;
-    --accent2: #3d6b2a;
-    --line: #33452a;
-    --gold: #b39a51;
-  }
-
-  * {
-    box-sizing: border-box
-  }
-
-  body {
-    margin: 0;
-    background:
-      radial-gradient(circle at top, rgba(127, 201, 78, .08), transparent 34%),
-      linear-gradient(180deg, #151817 0%, #111311 100%);
-    color: var(--ink);
-    font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.45;
-    padding: 18px;
-    min-height: 100vh
-  }
-
-  h1,
-  h2,
-  h3 {
-    font-family: 'Palatino Linotype', Palatino, serif;
-    letter-spacing: .04em;
-    margin: .2em 0
-  }
-
-  h1 {
-    color: var(--accent);
-    text-align: center;
-    font-size: 1.9rem;
-    text-shadow: 0 0 18px rgba(127, 201, 78, .45), 0 0 40px rgba(127, 201, 78, .2)
-  }
-
-  .sub {
-    text-align: center;
-    color: var(--muted);
-    margin-bottom: 18px
-  }
-
-  .wrap {
-    max-width: 1240px;
-    margin: 0 auto
-  }
-
-  .sheet-shell {
-    border: 1px solid #445739;
-    background: #11180d;
-    box-shadow: 0 18px 60px rgba(0, 0, 0, .42), inset 0 0 0 1px rgba(127, 201, 78, .08);
-  }
-
-  .sheet-head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 18px;
-    align-items: start;
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid rgba(127, 201, 78, .15);
-    background: linear-gradient(180deg, rgba(31, 45, 24, .96), rgba(21, 30, 16, .98));
-  }
-
-  .hero {
-    min-width: 0
-  }
-
-  .hero-name {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px
-  }
-
-  .hero-bow {
-    width: 28px;
-    height: 28px;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges
-  }
-
-  .hero h1 {
-    text-align: left;
-    margin: 0;
-    font-size: 1.75rem;
-    color: #f0f3df;
-    text-shadow: none
-  }
-
-  .hero-sub {
-    margin: 2px 0 0;
-    color: var(--muted);
-    font-size: .76rem;
-    letter-spacing: .08em;
-    text-transform: uppercase
-  }
-
-  .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 8px
-  }
-
-  .hero-stats .hstat label {
-    color: var(--muted);
-    font-size: .6rem;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin: 0 0 2px
-  }
-
-  .hero-stats .hstat input {
-    margin-top: 0;
-    background: rgba(11, 17, 9, .92);
-    border: 1px solid rgba(115, 145, 88, .35);
-    color: var(--ink);
-    border-radius: 0;
-    padding: 6px 7px;
-    font: inherit;
-    font-size: .82rem;
-    min-height: 32px
-  }
-
-  .head-side {
-    display: grid;
-    gap: 10px;
-    min-width: 260px
-  }
-
-  .grid {
-    display: grid;
-    gap: 14px
-  }
-
-  .cols-3 {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
-  }
-
-  .cols-6 {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr))
-  }
-
-  .card {
-    background: linear-gradient(180deg, rgba(22, 31, 16, .92), rgba(14, 21, 11, .92));
-    border: 1px solid rgba(77, 100, 60, .55);
-    border-radius: 0;
-    padding: 14px 16px;
-    box-shadow: inset 0 0 0 1px rgba(127, 201, 78, .04)
-  }
-
-  .card h2 {
-    color: var(--accent);
-    font-size: .92rem;
-    border-bottom: 1px solid rgba(127, 201, 78, .16);
-    padding-bottom: 8px;
-    text-transform: uppercase;
-    text-shadow: none;
-    letter-spacing: .08em
-  }
-
-  label {
-    display: block;
-    font-size: .72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    margin-top: 8px
-  }
-
-  input,
-  textarea,
-  select {
-    width: 100%;
-    background: rgba(9, 14, 8, .9);
-    border: 1px solid rgba(90, 115, 67, .48);
-    color: var(--ink);
-    border-radius: 0;
-    padding: 7px 9px;
-    font: inherit;
-    font-size: .93rem
-  }
-
-  input:focus,
-  textarea:focus {
-    outline: 1px solid var(--accent);
-    box-shadow: 0 0 10px rgba(127, 201, 78, .35)
-  }
-
-  .stat {
-    text-align: center
-  }
-
-  .stat .mod {
-    font-size: 1.7rem;
-    color: var(--accent);
-    font-weight: bold;
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 6px 0
-  }
-
-  .stat input {
-    margin-top: 6px;
-    text-align: center
-  }
-
-  .bigstat {
-    text-align: center;
-    padding: 6px
-  }
-
-  .bigstat input {
-    font-size: 1.3rem;
-    text-align: center
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: .92rem
-  }
-
-  th {
-    color: var(--muted);
-    font-size: .7rem;
-    text-transform: uppercase;
-    text-align: left;
-    padding: 4px 6px
-  }
-
-  td {
-    padding: 3px 6px;
-    border-top: 1px solid var(--line)
-  }
-
-  td input {
-    padding: 4px 6px;
-    font-size: .9rem
-  }
-
-  .skill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 3px 0;
-    font-size: .92rem
-  }
-
-  .skill .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid var(--muted);
-    cursor: pointer;
-    flex: none
-  }
-
-  .skill .dot.prof {
-    background: var(--accent);
-    border-color: var(--accent)
-  }
-
-  .skill .val {
-    width: 34px;
-    text-align: right;
-    color: var(--accent);
-    font-weight: bold
-  }
-
-  .toolbar {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    flex-wrap: wrap
-  }
-
-  button {
-    background: var(--accent2);
-    color: #fff;
-    border: 1px solid rgba(127, 201, 78, .28);
-    border-radius: 0;
-    padding: 8px 14px;
-    font: inherit;
-    font-size: .84rem;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    cursor: pointer
-  }
-
-  button:hover {
-    filter: brightness(1.15)
-  }
-
-  button.ghost {
-    background: rgba(12, 18, 9, .7);
-    border: 1px solid rgba(147, 168, 126, .32);
-    color: var(--muted)
-  }
-
-  a {
-    color: var(--accent)
-  }
-
-  .note {
-    font-size: .8rem;
-    color: var(--muted);
-    text-align: center;
-    margin-top: 6px
-  }
-
-  .notes-wrap {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start
-  }
-
-  .notes-side {
-    width: 220px;
-    flex: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px
-  }
-
-  .notes-side .nrow {
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 8px 10px;
-    cursor: pointer;
-    font-size: .95rem;
-    color: var(--ink)
-  }
-
-  .notes-side .nrow.active {
-    border-color: var(--accent);
-    box-shadow: 0 0 12px rgba(127, 201, 78, .35)
-  }
-
-  .notes-side .nrow .ndate {
-    display: block;
-    color: var(--muted);
-    font-size: .72rem;
-    margin-bottom: 2px
-  }
-
-  .notes-side .nrow .ndel {
-    float: right;
-    cursor: pointer;
-    color: var(--muted)
-  }
-
-  .notes-main {
-    flex: 1;
-    min-width: 0
-  }
-
-  .notes-main textarea.note-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 8px
-  }
-
-  .wysiwig-bar {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 8px
-  }
-
-  .wysiwig-bar button {
-    padding: 6px 10px;
-    font-size: .9rem;
-    line-height: 1
-  }
-
-  .note-editor {
-    min-height: 320px;
-    max-height: 70vh;
-    overflow: auto;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 12px;
-    background: var(--panel2);
-    font-size: 1.1rem;
-    line-height: 1.6
-  }
-
-  .note-editor:focus {
-    outline: 1px solid var(--accent);
-    box-shadow: 0 0 10px rgba(127, 201, 78, .35)
-  }
-
-  .note-editor h1,
-  .note-editor h2,
-  .note-editor h3 {
-    color: var(--accent);
-    margin: .4em 0 .2em
-  }
-
-  .note-editor ul,
-  .note-editor ol {
-    margin: .3em 0 .3em 1.2em
-  }
-
-  .note-empty {
-    color: var(--muted);
-    font-size: .95rem;
-    padding: 20px 0
-  }
-
-  @media(max-width:640px) {
-    .notes-wrap {
-      flex-direction: column
-    }
-
-    .notes-side {
-      width: 100%;
-      flex-direction: row;
-      overflow-x: auto
-    }
-
-    .notes-side .nrow {
-      flex: none;
-      min-width: 140px
-    }
-  }
-
-  .saved {
-    position: fixed;
-    bottom: 14px;
-    right: 16px;
-    background: var(--panel2);
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: .8rem;
-    opacity: 0;
-    transition: opacity .4s
-  }
-
-  .tabs {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    padding: 0 16px;
-    margin: 0;
-    border-bottom: 1px solid rgba(127, 201, 78, .22);
-    background: linear-gradient(180deg, rgba(17, 24, 13, .98), rgba(14, 19, 11, .98))
-  }
-
-  .tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0;
-    margin-bottom: -1px;
-    background: rgba(12, 18, 9, .85);
-    border: 1px solid rgba(80, 103, 62, .6);
-    border-bottom-color: rgba(127, 201, 78, .4);
-    color: #c4d3b3;
-    padding: 7px 12px;
-    min-height: 38px
-  }
-
-  .tab.active {
-    background: linear-gradient(180deg, rgba(50, 80, 31, .95), rgba(29, 48, 19, .96));
-    color: #f2f5e6;
-    border-color: rgba(127, 201, 78, .72);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06)
-  }
-
-  /* Pixel-art tab icons (crisp, no smoothing) */
-  .tabicon {
-    width: 22px;
-    height: 22px;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    vertical-align: -4px;
-    margin-right: 4px
-  }
-
-  /* Placeholder for tabs awaiting custom pixel-art icons */
-  .tabplaceholder {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
-    font-size: .7rem;
-    font-weight: bold;
-    color: var(--gold);
-    background: rgba(14, 20, 10, .95);
-    border: 1px solid rgba(179, 154, 81, .55);
-    border-radius: 0;
-    margin-right: 2px;
-    vertical-align: -3px
-  }
-
-  /* HP heart icon */
-  .hpicon {
-    width: 26px;
-    height: 26px;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    margin-right: 6px;
-    vertical-align: -6px
-  }
-
-  .hpbtn {
-    width: 30px;
-    height: 30px;
-    border-radius: 999px;
-    font-size: 1rem;
-    padding: 0;
-    line-height: 1
-  }
-
-  .hpbtn.heal {
-    background: var(--accent2);
-    box-shadow: 0 0 12px rgba(127, 201, 78, .35)
-  }
-
-  select {
-    appearance: auto
-  }
-
-  .hpbar {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    flex-wrap: wrap;
-    background: rgba(11, 17, 9, .78);
-    border: 1px solid rgba(82, 104, 64, .56);
-    border-radius: 0;
-    padding: 8px 10px;
-    margin: 0
-  }
-
-  .hpbar .hplabel {
-    color: var(--accent);
-    font-size: 1.05rem;
-    text-transform: uppercase;
-    letter-spacing: .06em
-  }
-
-  .hpbar input {
-    width: 56px;
-    text-align: center;
-    font-size: 1rem;
-    padding: 5px 6px
-  }
-
-  .hpbar .slash {
-    color: var(--muted);
-    font-size: 1.3rem
-  }
-
-  .hpbar .hptemp {
-    width: 48px;
-    font-size: .88rem
-  }
-
-  .hpbar .small {
-    font-size: .72rem;
-    color: var(--muted);
-    text-transform: uppercase
-  }
-
-  .sheet-stage {
-    min-height: 70vh;
-    padding: 18px 16px 20px;
-    background:
-      linear-gradient(rgba(10, 16, 8, .55), rgba(10, 16, 8, .55)),
-      radial-gradient(circle at 20% 15%, rgba(138, 178, 111, .07), transparent 30%),
-      radial-gradient(circle at 85% 10%, rgba(138, 178, 111, .06), transparent 22%),
-      linear-gradient(180deg, rgba(34, 58, 38, .96), rgba(25, 43, 25, .97));
-    position: relative;
-  }
-
-  .sheet-stage::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      repeating-linear-gradient(0deg, rgba(255, 255, 255, .018), rgba(255, 255, 255, .018) 1px, transparent 1px, transparent 4px),
-      repeating-linear-gradient(90deg, rgba(0, 0, 0, .02), rgba(0, 0, 0, .02) 1px, transparent 1px, transparent 5px);
-    mix-blend-mode: soft-light;
-    opacity: .35;
-  }
-
-  .sheet-stage > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  @media(max-width:980px) {
-    .sheet-head {
-      grid-template-columns: 1fr;
-    }
-
-    .hero-stats {
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    }
-
-    .head-side,
-    .toolbar,
-    .hpbar {
-      justify-content: flex-start;
-    }
-  }
-
-/* Figma cleanup pass: frame-like header, large HP controls, tab rail, textured play area. */
-body {
-  padding: 0;
-  background:
-    radial-gradient(circle at 18% 4%, rgba(234, 255, 202, .08), transparent 22%),
-    radial-gradient(circle at 84% 8%, rgba(127, 201, 78, .05), transparent 24%),
-    #0e180b;
+  /* --- palette (Figma) --- */
+  --base:        #2b3a27;  /* frame background beneath the texture */
+  --veil:        rgba(22, 32, 15, .70);   /* header band + tab fill  */
+  --veil-solid:  #16200f;
+  --ink:         #fafacb;  /* parchment text                        */
+  --ink-dim:     #c8d2ab;
+  --accent:      #7fc94e;  /* bright green: rules, borders, +        */
+  --accent-dim:  #779a60;  /* muted green: glow, secondary stroke    */
+  --accent-deep: #3d6b2a;  /* Save button fill                       */
+  --slot:        #2b3a27;  /* HP number wells                        */
+
+  /* --- type --- */
+  --font-display: "Palatino Linotype", "Book Antiqua", Palatino,
+                  "URW Palladio L", Georgia, serif;
+  --font-body:    "Lato", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  /* --- geometry (Figma) --- */
+  --r-tab:    10px;   /* tab + Save button corner  */
+  --r-slot:   16px;   /* HP number well            */
+  --r-card:   10px;
+  --rule:     4px;    /* green line under the tabs */
+  --stroke:   2px;    /* tab border                */
+
+  /* Design gutter is 85px on a 1440px frame. */
+  --gutter: clamp(20px, 5.9vw, 85px);
+  --shell:  1440px;
+
+  /* Fluid type ramped from the 1440px design measurements. */
+  --fs-name:  clamp(2.25rem, 4.3vw, 3.87rem);  /* 61.8px  */
+  --fs-stat:  clamp(1.05rem, 1.96vw, 1.77rem); /* 28.3px  */
+  --fs-meta:  clamp(.95rem, 1.6vw, 1.44rem);   /* 23.0px  */
+  --fs-tab:   clamp(1rem, 1.9vw, 1.72rem);     /* 30.8px  */
+  --fs-hp:    clamp(1.5rem, 3.2vw, 2.88rem);   /* 46.1px  */
+
+  --glow: 0 2px 14px rgba(119, 154, 96, .9);
 }
 
-.wrap { max-width: 1024px; min-height: 100vh; }
+*,
+*::before,
+*::after { box-sizing: border-box; }
 
-.sheet-shell {
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
   min-height: 100vh;
-  border: 1px solid rgba(7, 11, 5, .85);
-  background: #111e0f;
-  box-shadow: 0 18px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(127,201,78,.05);
+  background: var(--base);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* The hand-drawn stone texture washes over the whole frame at 30%,
+   exactly as in Figma, with the frame's inset shadow on top. */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  background: url("assets/parchment-texture.jpg") center / cover no-repeat;
+  opacity: .30;
+  z-index: -2;
+}
+
+body::after {
+  box-shadow:
+    inset 0 4px 42.7px 41px rgba(0, 0, 0, .25),
+    inset 0 4px 4px 0 rgba(19, 24, 18, .74);
+  z-index: -1;
+}
+
+.wrap {
+  max-width: var(--shell);
+  margin: 0 auto;
+}
+
+.sheet-shell { min-height: 100vh; }
+
+/* ============================================================
+   HEADER BAND  —  Figma node 11:17
+   A single translucent, blurred slab carrying the identity block,
+   the HP cluster and the tab rail, closed off by the green rule.
+   ============================================================ */
+
+.sheet-top {
+  background: var(--veil);
+  -webkit-backdrop-filter: blur(3.9px);
+  backdrop-filter: blur(3.9px);
+  border-bottom: var(--rule) solid var(--accent);
 }
 
 .sheet-head {
-  gap: 28px;
-  padding: 42px 66px 30px;
-  border-bottom: 0;
-  background:
-    radial-gradient(circle at 14% 8%, rgba(223,255,188,.06), transparent 24%),
-    linear-gradient(180deg, rgba(20,34,17,.99), rgba(15,26,12,.99));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 24px clamp(20px, 4vw, 56px);
+  padding: clamp(28px, 4.5vw, 62px) var(--gutter) clamp(20px, 2.6vw, 36px);
 }
 
-.hero-bow { display:none; }
-.hero h1 {
-  font-size: 2.75rem;
-  line-height: 1;
-  color: #f3f0c5;
-  text-shadow: none;
-}
-.hero-sub { display:none; }
-.hero-name { margin-bottom: 10px; }
-.hero-stats {
+/* --- identity block -------------------------------------- */
+
+.hero { min-width: 0; }
+
+.hero-line {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 26px;
-  max-width: 620px;
+  align-items: baseline;
+  gap: 6px clamp(14px, 1.9vw, 27px);
 }
-.hero-stats .hstat {
+
+.hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-name);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  text-shadow: 0 3.5px 3.5px rgba(0, 0, 0, .25);
+}
+
+/* Level / Initiative sit on the name's baseline in Palatino. */
+.hstat {
   display: inline-flex;
   align-items: baseline;
-  gap: 6px;
-}
-.hero-stats .hstat label {
-  color: #f3f0c5;
-  font-size: 1.08rem;
+  gap: .4em;
+  font-family: var(--font-display);
+  font-size: var(--fs-stat);
   font-weight: 700;
-  text-transform: none;
-  letter-spacing: 0;
-  margin: 0;
-  white-space: nowrap;
-}
-.hero-stats .hstat input {
-  width: auto;
-  min-width: 34px;
-  max-width: 190px;
-  background: transparent;
-  border: 0;
-  color: #f3f0c5;
-  padding: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  min-height: 0;
-  box-shadow: none;
-}
-.hero-stats .hstat input:focus {
-  outline: 1px solid rgba(127,201,78,.85);
-  outline-offset: 3px;
-  background: rgba(6,12,5,.5);
-}
-.head-side { gap: 24px; min-width: 350px; justify-items: end; }
-.toolbar .ghost { padding: 6px 10px; font-size: .66rem; opacity: .78; }
-button.save-primary {
-  min-width: 170px;
-  padding: 11px 24px;
-  background: rgba(128,128,128,.82);
-  border: 0;
-  color: #f3f0c5;
-  font-size: 1.25rem;
-  font-weight: 700;
-  text-transform: none;
-  letter-spacing: 0;
-  box-shadow: none;
+  color: var(--ink);
 }
 
-.hpbar { gap: 12px; background: transparent; border: 0; padding: 0; }
-.hpicon { width: 38px; height: 38px; }
-.hpbar .hplabel,
-.hpbar .small,
-.hpbar .hptemp { display:none; }
-.hpbtn,
-.hpbtn.heal {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  font-size: 1.7rem;
-  font-weight: 700;
-  padding: 0;
-  line-height: 1;
-  color: #82d95b;
-  background: transparent;
-  border: 1px solid #72ca4b;
-  box-shadow: none;
+/* Class / Background / Race drop to Lato on the second row. */
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px clamp(16px, 2.25vw, 32px);
+  margin-top: clamp(10px, 1.2vw, 16px);
 }
-.hpbar input {
-  width: 64px;
-  text-align: center;
-  font-size: 1.7rem;
-  font-weight: 700;
-  color: #f3f0c5;
-  background: rgba(50,72,43,.55);
+
+.hero-meta .hstat {
+  font-family: var(--font-body);
+  font-size: var(--fs-meta);
+}
+
+/* In Figma the label and its value are the same size and face —
+   "Level: X" reads as one phrase. The global uppercase `label`
+   styling further down must not reach in here. */
+.hstat label {
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Header fields are text that happens to be editable — no boxes
+   until you interact with them. */
+.hstat input {
+  width: auto;
+  min-width: 2ch;
+  max-width: 24ch;
+  padding: 2px 4px;
   border: 0;
-  padding: 7px 6px;
-  border-radius: 10px;
+  border-bottom: 1px dashed rgba(250, 250, 203, .28);
+  border-radius: 4px 4px 0 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  field-sizing: content;         /* auto-width in Chrome 123+ */
 }
-.hpbar .slash { color:#f3f0c5; font-size:1.9rem; font-weight:700; }
+
+.hstat input::placeholder { color: rgba(250, 250, 203, .38); }
+
+.hstat input:hover { background: rgba(0, 0, 0, .22); }
+
+.hstat input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  background: rgba(0, 0, 0, .35);
+  border-bottom-color: transparent;
+}
+
+/* --- right-hand column: Save + HP ------------------------- */
+
+.head-side {
+  display: grid;
+  justify-items: end;
+  gap: clamp(16px, 2vw, 30px);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Save — Figma node 73:564 (239 x 64, r10, #3d6b2a) */
+.btn-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-width: clamp(150px, 16.6vw, 240px);
+  min-height: clamp(48px, 4.4vw, 64px);
+  padding: 0 24px;
+  border: 0;
+  border-radius: var(--r-tab);
+  background: var(--accent-deep);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--fs-tab);
+  font-weight: 700;
+  text-shadow: var(--glow);
+  cursor: pointer;
+  transition: filter .15s ease, transform .15s ease;
+}
+
+.btn-save:hover { filter: brightness(1.14); }
+.btn-save:active { transform: translateY(1px); }
+
+.btn-save .icon {
+  width: clamp(30px, 3.4vw, 48px);
+  height: clamp(31px, 3.5vw, 50px);
+}
+
+/* Reset / Export are deliberately quiet — the design only calls
+   for one primary action up here. */
+.btn-quiet {
+  padding: 8px 14px;
+  border: 1px solid rgba(119, 154, 96, .45);
+  border-radius: var(--r-tab);
+  background: rgba(0, 0, 0, .25);
+  color: var(--ink-dim);
+  font-family: var(--font-body);
+  font-size: .82rem;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+
+.btn-quiet:hover { border-color: var(--accent); color: var(--ink); }
+
+/* --- HP cluster  —  Figma nodes 59:9 / 59:10 / 63:90-91 ---- */
+
+.hpbar {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1vw, 14px);
+}
+
+.hp-heart {
+  width: clamp(44px, 4.7vw, 68px);
+  height: clamp(44px, 4.7vw, 68px);
+  object-fit: contain;
+}
+
+/* Figma draws + at 54.8px and − at 60.7px; matched here on
+   purpose — a mismatched pair is what made the row look wonky. */
+.hpbtn {
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 3.9vw, 56px);
+  height: clamp(38px, 3.9vw, 56px);
+  padding: 0;
+  border: 1.7px solid var(--accent-dim);
+  border-radius: 50%;
+  background: var(--slot);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.hpbtn.heal { border-color: var(--accent); }
+
+.hpbtn:hover { background: #37492f; border-color: var(--accent); }
+
+.hp-well {
+  width: clamp(60px, 6.1vw, 88px);
+  height: clamp(48px, 4.8vw, 69px);
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--r-slot);
+  background: var(--slot);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--fs-hp);
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 2.6px 2.6px rgba(0, 0, 0, .25);
+}
+
+.hp-well:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hp-slash {
+  font-family: var(--font-display);
+  font-size: var(--fs-hp);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ============================================================
+   TAB RAIL  —  Figma node 71:6
+   ============================================================ */
 
 .tabs {
-  gap: 20px;
-  padding: 0 60px;
-  border-bottom: 3px solid #72ca4b;
-  background: #132610;
+  display: flex;
+  gap: clamp(8px, 1.4vw, 20px);
+  padding: 0 var(--gutter);
+  margin-bottom: calc(var(--rule) * -1);   /* active tab eats the rule */
 }
+
 .tab {
-  margin-bottom: -3px;
-  min-width: 150px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  background: rgba(23,40,16,.86);
-  border: 2px solid #72ca4b;
-  border-bottom-color: #72ca4b;
-  color: #f3f0c5;
-  padding: 9px 18px;
-  min-height: 44px;
-  font-size: 1.22rem;
+  gap: clamp(6px, .8vw, 12px);
+  flex: 1 1 0;
+  max-width: 240px;
+  min-height: clamp(46px, 4.4vw, 64px);
+  padding: 0 clamp(8px, 1vw, 16px);
+  border: var(--stroke) solid var(--accent);
+  border-bottom: var(--rule) solid var(--accent);
+  border-radius: var(--r-tab) var(--r-tab) 0 0;
+  background: var(--veil);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--fs-tab);
   font-weight: 700;
-  text-transform: none;
-  letter-spacing: 0;
+  text-shadow: var(--glow);
+  cursor: pointer;
+  transition: background .15s ease, opacity .15s ease;
 }
+
+.tab:not(.active) { opacity: .74; }
+
+.tab:hover:not(.active) { opacity: 1; background: rgba(35, 54, 24, .8); }
+
+/* The selected tab joins the panel: its bottom edge is cut away so
+   it reads as one surface with the content below. */
 .tab.active {
-  background: rgba(25,43,18,.98);
-  color: #f3f0c5;
-  border-color: #72ca4b;
-  box-shadow: 0 -1px 10px rgba(127,201,78,.18);
+  background: rgba(35, 54, 24, .92);
+  border-bottom-color: transparent;
 }
-.tabicon { width:24px; height:24px; }
+
+.tab:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.tabicon {
+  width: clamp(24px, 2.6vw, 38px);
+  height: clamp(24px, 2.6vw, 38px);
+  object-fit: contain;
+  flex: none;
+}
+
+/* Pixel-art icons must never be smoothed. Applies to the raster
+   icons only — the SVG ones scale cleanly on their own. */
+img.tabicon[src$=".png"],
+.hp-heart,
+.btn-save .icon {
+  image-rendering: pixelated;
+}
+
+/* ============================================================
+   STAGE + CARDS
+   Below the rule Figma shows bare texture, so the stage stays
+   transparent and the cards float on it in the same veil as the
+   header — one material language across the sheet.
+   ============================================================ */
 
 .sheet-stage {
-  padding: 28px 60px 42px;
-  background:
-    linear-gradient(rgba(23,52,35,.70), rgba(18,43,30,.74)),
-    url('assets/figma-green-texture.jpg') center top / cover repeat-y,
-    linear-gradient(180deg, #254434, #173124);
+  min-height: 60vh;
+  padding: clamp(20px, 2.6vw, 36px) var(--gutter) clamp(32px, 4vw, 56px);
 }
 
-@media(max-width:980px) {
-  .sheet-head { padding: 28px 24px 24px; }
-  .hero-stats { max-width: none; }
-  .head-side { min-width: 0; justify-items: start; }
-  .tabs, .sheet-stage { padding-left: 24px; padding-right: 24px; }
-  .tabs { gap: 10px; }
-  .tab { min-width: 140px; }
+.grid { display: grid; gap: 16px; }
+
+/* Page-level columns: three cards across on a wide screen. */
+.cols-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.cols-6 { grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); }
+
+/* Inside a card there is nowhere near 300px to spare, so stat grids
+   need their own much smaller track size — otherwise auto-fit falls
+   back to a single column and the card grows very tall. */
+.card .cols-3 { grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); }
+
+/* Cards in a row hold genuinely different amounts of content; letting
+   each size to its own height beats stretching them all to match the
+   tallest and leaving big hollow gaps. */
+.sheet-stage > div > .grid { align-items: start; }
+
+.card {
+  padding: 18px 20px 20px;
+  border: 1px solid rgba(127, 201, 78, .30);
+  border-radius: var(--r-card);
+  background: var(--veil);
+  -webkit-backdrop-filter: blur(3.9px);
+  backdrop-filter: blur(3.9px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .28);
 }
 
-@media(max-width:640px) {
-  .hero h1 { font-size: 2.25rem; }
-  .hero-stats { gap: 8px 16px; }
-  .hero-stats .hstat label,
-  .hero-stats .hstat input { font-size: .98rem; }
-  button.save-primary { width: 100%; }
-  .hpbar { justify-content: flex-start; }
-  .hpbar input { width: 56px; font-size: 1.35rem; }
-  .hpbtn, .hpbtn.heal { width: 40px; height: 40px; }
-  .tab { flex: 1 1 calc(50% - 10px); min-width: 132px; }
+/* Cards nested inside a card (spell entries) drop the heavy
+   treatment so they don't stack blur on blur. */
+.card .card {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(0, 0, 0, .22);
+  box-shadow: none;
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(127, 201, 78, .28);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 1.06rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.card h2 .hint {
+  font-family: var(--font-body);
+  font-size: .68rem;
+  font-weight: 400;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--ink-dim);
+}
+
+.card h3 {
+  margin: 18px 0 8px;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: .04em;
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  color: var(--ink-dim);
+  font-size: .7rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(119, 154, 96, .42);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, .30);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: .95rem;
+}
+
+textarea { resize: vertical; line-height: 1.55; }
+
+select { appearance: auto; }
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+/* --- ability scores --------------------------------------- */
+
+.stat { text-align: center; }
+
+.stat label { margin: 0 0 4px; }
+
+/* The big number IS the input — no more value shown twice. */
+.stat input {
+  padding: 8px 4px;
+  border-color: rgba(127, 201, 78, .34);
+  background: rgba(0, 0, 0, .34);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.bigstat { text-align: center; }
+
+.bigstat label { margin-top: 0; }
+
+.bigstat input {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+/* --- tables ----------------------------------------------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+
+th {
+  padding: 4px 6px;
+  color: var(--ink-dim);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+td {
+  padding: 4px 6px;
+  border-top: 1px solid rgba(119, 154, 96, .22);
+}
+
+td input { padding: 6px 8px; font-size: .9rem; }
+
+/* --- skills / saves --------------------------------------- */
+
+.skill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+  font-size: .92rem;
+}
+
+.skill .name { flex: 1; }
+
+.skill .name small { color: var(--ink-dim); }
+
+/* A real button so it is reachable by keyboard and announces
+   its own pressed state. */
+.skill .dot {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  padding: 0;
+  border: 1.5px solid var(--accent-dim);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background .12s ease, box-shadow .12s ease;
+}
+
+.skill .dot[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(127, 201, 78, .55);
+}
+
+.skill .dot:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.skill .val {
+  width: 36px;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-align: right;
+}
+
+/* --- generic buttons -------------------------------------- */
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: 1px solid rgba(127, 201, 78, .4);
+  border-radius: 6px;
+  background: var(--accent-deep);
+  color: var(--ink);
+  font-size: .85rem;
+  letter-spacing: .04em;
+  transition: filter .15s ease;
+}
+
+.btn:hover { filter: brightness(1.15); }
+
+.btn.ghost {
+  background: rgba(0, 0, 0, .25);
+  border-color: rgba(119, 154, 96, .42);
+  color: var(--ink-dim);
+}
+
+.btn.ghost:hover { color: var(--ink); border-color: var(--accent); }
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+a { color: var(--accent); }
+
+.note {
+  margin-top: 8px;
+  color: var(--ink-dim);
+  font-size: .8rem;
+  text-align: center;
+}
+
+.list {
+  margin: .4em 0;
+  padding-left: 1.2em;
+  font-size: .9rem;
+}
+
+.list.dim { color: var(--ink-dim); font-size: .85rem; }
+
+.spell-entry { margin-bottom: 10px; padding: 12px 14px; }
+
+.spell-entry p { margin: .35em 0 0; font-size: .87rem; }
+
+.spell-meta { color: var(--ink-dim); font-size: .78rem; }
+
+/* --- notes ------------------------------------------------ */
+
+.notes-wrap { display: flex; gap: 16px; align-items: flex-start; }
+
+.notes-side {
+  width: 220px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* With no notes saved the sidebar would still reserve its 220px and
+   push the empty-state message off to one side. */
+.notes-side:empty { display: none; }
+
+.notes-side .nrow {
+  padding: 9px 11px;
+  border: 1px solid rgba(119, 154, 96, .3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .26);
+  color: var(--ink);
+  font-size: .93rem;
+  cursor: pointer;
+}
+
+.notes-side .nrow.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(127, 201, 78, .3);
+}
+
+.notes-side .nrow .ndate {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ink-dim);
+  font-size: .72rem;
+}
+
+.notes-side .nrow .ndel { float: right; color: var(--ink-dim); cursor: pointer; }
+
+.notes-side .nrow .ndel:hover { color: var(--accent); }
+
+.notes-main { flex: 1; min-width: 0; }
+
+.notes-main .note-title {
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.wysiwig-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+
+.wysiwig-bar button {
+  padding: 6px 11px;
+  border: 1px solid rgba(119, 154, 96, .42);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, .25);
+  color: var(--ink-dim);
+  font-size: .88rem;
+  line-height: 1;
+}
+
+.wysiwig-bar button:hover { color: var(--ink); border-color: var(--accent); }
+
+.note-editor {
+  min-height: 320px;
+  max-height: 70vh;
+  padding: 14px;
+  overflow: auto;
+  border: 1px solid rgba(119, 154, 96, .3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .26);
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.note-editor:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.note-editor h1,
+.note-editor h2,
+.note-editor h3 { margin: .5em 0 .25em; color: var(--accent); }
+
+.note-editor ul,
+.note-editor ol { margin: .3em 0 .3em 1.2em; }
+
+.note-empty { padding: 20px 0; color: var(--ink-dim); }
+
+/* --- save toast ------------------------------------------- */
+
+.saved {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  padding: 8px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  background: var(--veil-solid);
+  color: var(--accent);
+  font-size: .82rem;
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+
+/* ============================================================
+   RESPONSIVE
+   The Figma frame is desktop-only; these are the fallbacks.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .sheet-head { grid-template-columns: 1fr; }
+  .head-side { justify-items: start; }
+  .toolbar { justify-content: flex-start; }
+  .tabs { flex-wrap: wrap; }
+  .tab { flex: 1 1 140px; }
+}
+
+@media (max-width: 640px) {
+  .notes-wrap { flex-direction: column; }
+
+  .notes-side {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .notes-side .nrow { flex: none; min-width: 140px; }
+
+  .btn-save { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
 }

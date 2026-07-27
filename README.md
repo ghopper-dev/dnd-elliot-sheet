@@ -43,6 +43,41 @@ Theme is forest-green glow, defined in the `:root` CSS variables at the top — 
 
 ---
 
+## Swapping in your own hand-drawn icons
+
+Every icon lives in `icons/` and is referenced once, from `index.html`. To
+replace one, drop your artwork in with the same filename — no CSS changes
+needed.
+
+| File | Where it appears | Source size |
+|---|---|---|
+| `icons/bow.png` | Elliot tab + favicon | 32×32 |
+| `icons/heart.png` | HP tracker | 32×32 |
+| `icons/save.png` | Save button | 64×64 |
+| `icons/bag.png` | Bag tab | 64×64 |
+| `icons/spellbook.png` | Spells tab | 64×64 |
+| `icons/drake-fire.svg` | Drake tab | *placeholder* |
+| `icons/notes-pixel.svg` | Notes tab | *placeholder* |
+
+**Rules for replacements — these are what keep the set looking like a set:**
+
+1. **Export PNG with a transparent background, never JPEG.** JPEG has no
+   alpha channel, so the icon arrives with an opaque rectangle baked in,
+   and its compression smears the hard edges pixel art depends on. This
+   was the original cause of the icons looking "off".
+2. **Square canvas** (32×32 or 64×64). The CSS sizes icons with
+   `object-fit: contain`, so a square export is never cropped or stretched.
+3. **Draw at 1× and let the browser scale up.** `image-rendering: pixelated`
+   keeps the blocks crisp; a pre-scaled blurry export cannot be un-blurred.
+4. **Keep the file extension honest.** A JPEG named `.png` still behaves
+   like a JPEG — browsers read the file's magic bytes, not its name.
+
+The two rows marked *placeholder* are flat single-colour SVGs left over from
+an icon library. They read differently from the full-colour pixel art on the
+other tabs, so they're the two worth drawing next.
+
+---
+
 ## How it stores data (read this)
 
 Everything lives in your browser's **localStorage**, tied to the page URL:
@@ -65,8 +100,16 @@ The next step is wiring the sheet to a **Google Sheet as a backend** (the page b
 
 - Static `index.html` + `style.css` + `app.js`, no build step, no runtime dependencies
 - `state` is a flat object; `localStorage` key `elliot-sheet-v1`
-- Tabs toggle `<div>` visibility; list features (bag, notes) rebuild from `state` on render
-- Some tab icons are from HackerNoon's Pixel Icon Library (MIT); license copy included in `icons/HackerNoon-Pixel-Icon-Library-LICENSE`
+- Tabs follow the ARIA tabs pattern — `role="tablist"`, `aria-selected`,
+  roving `tabindex`, arrow-key navigation — and toggle panels with `hidden`
+- Dynamic rows are built with `createElement`/`textContent` rather than
+  `innerHTML`, since character data round-trips through localStorage
+- Layout is derived from the Figma frame *Desktop View* (node `1:27`);
+  design tokens live in `:root` in `style.css` and are named after it
+- Body text is Lato (Google Fonts, degrades to a system sans); headings,
+  the character name and HP numerals use a Palatino stack
+- The two placeholder tab icons come from HackerNoon's Pixel Icon Library
+  (MIT); license copy in `icons/HackerNoon-Pixel-Icon-Library-LICENSE`
 - Hosted free on GitHub Pages
 
 Built by Ghopper for Kate. Fork freely.
