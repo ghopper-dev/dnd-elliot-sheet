@@ -378,9 +378,9 @@ body::after {
   flex: none;
 }
 
-/* Pixel-art icons must never be smoothed. Applies to the raster
-   icons only — the SVG ones scale cleanly on their own. */
-img.tabicon[src$=".png"],
+/* Pixel-art icons must never be smoothed: these are drawn at 32/64px
+   and scaled up, so the blocks have to stay hard-edged. */
+.tabicon,
 .hp-heart,
 .btn-save .icon {
   image-rendering: pixelated;

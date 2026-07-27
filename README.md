@@ -56,8 +56,8 @@ needed.
 | `icons/save.png` | Save button | 64×64 |
 | `icons/bag.png` | Bag tab | 64×64 |
 | `icons/spellbook.png` | Spells tab | 64×64 |
-| `icons/drake-fire.svg` | Drake tab | *placeholder* |
-| `icons/notes-pixel.svg` | Notes tab | *placeholder* |
+| `icons/notes.png` | Notes tab | 64×64 |
+| `icons/drake.png` | Drake tab | 64×64 |
 
 **Rules for replacements — these are what keep the set looking like a set:**
 
@@ -72,9 +72,8 @@ needed.
 4. **Keep the file extension honest.** A JPEG named `.png` still behaves
    like a JPEG — browsers read the file's magic bytes, not its name.
 
-The two rows marked *placeholder* are flat single-colour SVGs left over from
-an icon library. They read differently from the full-colour pixel art on the
-other tabs, so they're the two worth drawing next.
+Every icon in the set is now hand-drawn pixel art — no library placeholders
+left.
 
 ---
 
@@ -108,8 +107,7 @@ The next step is wiring the sheet to a **Google Sheet as a backend** (the page b
   design tokens live in `:root` in `style.css` and are named after it
 - Body text is Lato (Google Fonts, degrades to a system sans); headings,
   the character name and HP numerals use a Palatino stack
-- The two placeholder tab icons come from HackerNoon's Pixel Icon Library
-  (MIT); license copy in `icons/HackerNoon-Pixel-Icon-Library-LICENSE`
+- All icons are original hand-drawn pixel art (64×64 / 32×32 RGBA PNG)
 - Hosted free on GitHub Pages
 
 Built by Ghopper for Kate. Fork freely.
