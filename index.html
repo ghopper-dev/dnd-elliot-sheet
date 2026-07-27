@@ -3,282 +3,324 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
 <title>Elliot — D&D 5e Character Sheet</title>
+<link rel="icon" href="icons/bow.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="app.js" defer></script>
 </head>
 <body>
 <div class="wrap">
   <div class="sheet-shell">
-  <div class="sheet-head">
-    <div class="hero">
-      <div class="hero-name">
-        <img class="hero-bow" src="icons/bow-pixel2.png" alt="">
-        <div>
+
+  <!-- ══ Header band — Figma node 11:17 ══ -->
+  <header class="sheet-top">
+    <div class="sheet-head">
+      <div class="hero">
+        <div class="hero-line">
           <h1 id="char-title">Elliot</h1>
-          <p class="hero-sub">D&D 5e character sheet</p>
+          <span class="hstat">
+            <label for="CharLevel">Level:</label>
+            <input id="CharLevel" placeholder="X" size="2">
+          </span>
+          <span class="hstat">
+            <label for="Initiative">Initiative:</label>
+            <input id="Initiative" placeholder="X" size="2">
+          </span>
+        </div>
+        <div class="hero-meta">
+          <!-- `size` is the fallback width for browsers without
+               CSS field-sizing; Chrome shrink-wraps to content. -->
+          <span class="hstat">
+            <label for="ClassLevel">Class:</label>
+            <input id="ClassLevel" placeholder="XXXXX" size="20">
+          </span>
+          <span class="hstat">
+            <label for="Background">Background:</label>
+            <input id="Background" placeholder="XXXXX" size="8">
+          </span>
+          <span class="hstat">
+            <label for="Race">Race:</label>
+            <input id="Race" placeholder="XXXXX" size="8">
+          </span>
         </div>
       </div>
-      <div class="hero-stats">
-        <div class="hstat"><label>Level:</label><input id="CharLevel" placeholder="X"></div>
-        <div class="hstat"><label>Initiative:</label><input id="Initiative" placeholder="X"></div>
-        <div class="hstat wide"><label>Class:</label><input id="ClassLevel" placeholder="XXXXX"></div>
-        <div class="hstat"><label>Background:</label><input id="Background" placeholder="XXXXX"></div>
-        <div class="hstat"><label>Race:</label><input id="Race" placeholder="XXXXX"></div>
+
+      <div class="head-side">
+        <div class="toolbar">
+          <button class="btn-quiet" type="button" onclick="resetAll()">Reset</button>
+          <button class="btn-quiet" type="button" onclick="exportJSON()">Export JSON</button>
+          <button class="btn-save" type="button" onclick="saveAll(true)">
+            <img class="icon" src="icons/save.png" alt="" width="48" height="50">
+            Save
+          </button>
+        </div>
+
+        <!-- HP cluster — Figma nodes 59:9 / 59:10 / 63:90-91 -->
+        <div class="hpbar">
+          <img class="hp-heart" src="icons/heart.png" alt="Hit points" width="68" height="68">
+          <button class="hpbtn heal" type="button" aria-label="Add 1 hit point" onclick="adjHP(1)">+</button>
+          <input class="hp-well" id="HPCurrent" aria-label="Current hit points" inputmode="numeric">
+          <span class="hp-slash" aria-hidden="true">/</span>
+          <input class="hp-well" id="HPMax" aria-label="Maximum hit points" inputmode="numeric">
+          <button class="hpbtn" type="button" aria-label="Remove 1 hit point" onclick="adjHP(-1)">−</button>
+        </div>
       </div>
     </div>
 
-    <div class="head-side">
-      <div class="toolbar">
-        <button class="save-primary" onclick="saveAll(true)"><span aria-hidden="true">💾</span> Save</button>
-        <button class="ghost" onclick="resetAll()">Reset</button>
-        <button class="ghost" onclick="exportJSON()">Export JSON</button>
-      </div>
-
-      <div class="hpbar">
-        <img class="hpicon" src="assets/figma-heart-icon.jpg" alt="HP">
-        <span class="hplabel">HP</span>
-        <button class="hpbtn heal" aria-label="Add HP" onclick="adjHP(1)">+</button>
-        <input id="HPCurrent">
-        <span class="slash">/</span>
-        <input id="HPMax">
-        <button class="hpbtn" aria-label="Remove HP" onclick="adjHP(-1)">−</button>
-        <span class="small">Temp</span>
-        <input id="HPTemp" class="hptemp" placeholder="0">
-      </div>
-    </div>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" id="tabbtn-char" onclick="showTab('char')"><img class="tabicon" src="assets/figma-bow-tab-icon.jpg" alt=""> Elliot</button>
-    <button class="tab" id="tabbtn-drake" onclick="showTab('drake')"><img class="tabicon" src="icons/drake-fire.svg" alt=""> Drake</button>
-    <button class="tab" id="tabbtn-spells" onclick="showTab('spells')"><img class="tabicon" src="icons/spellbook-pixel.svg" alt=""> Spells</button>
-    <button class="tab" id="tabbtn-bag" onclick="showTab('bag')"><img class="tabicon" src="icons/bag-pixel.svg" alt=""> Bag</button>
-    <button class="tab" id="tabbtn-notes" onclick="showTab('notes')"><img class="tabicon" src="icons/notes-pixel.svg" alt=""> Notes</button>
-  </div>
+    <!-- ══ Tab rail — Figma node 71:6 ══ -->
+    <nav class="tabs" role="tablist" aria-label="Character sheet sections">
+      <button class="tab active" type="button" role="tab" id="tabbtn-char"
+              aria-selected="true" aria-controls="tab-char" onclick="showTab('char')">
+        <img class="tabicon" src="icons/bow.png" alt="" width="38" height="38"> Elliot
+      </button>
+      <button class="tab" type="button" role="tab" id="tabbtn-drake"
+              aria-selected="false" aria-controls="tab-drake" onclick="showTab('drake')">
+        <img class="tabicon" src="icons/drake-fire.svg" alt="" width="38" height="38"> Drake
+      </button>
+      <button class="tab" type="button" role="tab" id="tabbtn-spells"
+              aria-selected="false" aria-controls="tab-spells" onclick="showTab('spells')">
+        <img class="tabicon" src="icons/spellbook.png" alt="" width="38" height="38"> Spells
+      </button>
+      <button class="tab" type="button" role="tab" id="tabbtn-bag"
+              aria-selected="false" aria-controls="tab-bag" onclick="showTab('bag')">
+        <img class="tabicon" src="icons/bag.png" alt="" width="38" height="38"> Bag
+      </button>
+      <button class="tab" type="button" role="tab" id="tabbtn-notes"
+              aria-selected="false" aria-controls="tab-notes" onclick="showTab('notes')">
+        <img class="tabicon" src="icons/notes-pixel.svg" alt="" width="38" height="38"> Notes
+      </button>
+    </nav>
+  </header>
 
   <div class="sheet-stage">
-  <div id="tab-char">
+
+  <!-- ══ ELLIOT ══ -->
+  <div id="tab-char" role="tabpanel" aria-labelledby="tabbtn-char" tabindex="0">
 
   <div class="grid cols-3">
     <div class="card">
       <h2>Character</h2>
-      <label>Character Name</label><input id="CharacterName">
-      <label>Player</label><input id="PlayerName">
-      <label>Proficiency Bonus</label><input id="ProfBonus">
-      <label>Inspiration</label><input id="Inspiration">
+      <label for="CharacterName">Character Name</label><input id="CharacterName">
+      <label for="PlayerName">Player</label><input id="PlayerName">
+      <label for="ProfBonus">Proficiency Bonus</label><input id="ProfBonus">
+      <label for="Inspiration">Inspiration</label><input id="Inspiration">
     </div>
+
     <div class="card">
       <h2>Combat</h2>
       <div class="grid cols-3">
-        <div class="bigstat"><label>AC</label><input id="AC"></div>
-        <div class="bigstat"><label>Speed</label><input id="Speed"></div>
-        <div class="bigstat"><label>Hit Dice Total</label><input id="HDTotal"></div>
-      </div>
-      <div class="grid cols-3">
-        <div class="bigstat"><label>Hit Dice</label><input id="HD"></div>
-        <div class="bigstat"><label>Spell DC</label><input id="SpellDC"></div>
+        <div class="bigstat"><label for="AC">AC</label><input id="AC"></div>
+        <div class="bigstat"><label for="Speed">Speed</label><input id="Speed"></div>
+        <div class="bigstat"><label for="HPTemp">Temp HP</label><input id="HPTemp" placeholder="0"></div>
+        <div class="bigstat"><label for="HDTotal">Hit Dice Total</label><input id="HDTotal"></div>
+        <div class="bigstat"><label for="HD">Hit Dice</label><input id="HD"></div>
+        <div class="bigstat"><label for="SpellDC">Spell DC</label><input id="SpellDC"></div>
       </div>
     </div>
+
     <div class="card">
       <h2>Attacks</h2>
       <table>
         <tr><th>Name</th><th>Atk</th><th>Damage</th></tr>
-        <tr><td><input id="Wpn1Name"></td><td><input id="Wpn1Atk"></td><td><input id="Wpn1Dmg"></td></tr>
-        <tr><td><input id="Wpn2Name"></td><td><input id="Wpn2Atk"></td><td><input id="Wpn2Dmg"></td></tr>
-        <tr><td><input id="Wpn3Name"></td><td><input id="Wpn3Atk"></td><td><input id="Wpn3Dmg"></td></tr>
+        <tr><td><input id="Wpn1Name" aria-label="Weapon 1 name"></td><td><input id="Wpn1Atk" aria-label="Weapon 1 attack"></td><td><input id="Wpn1Dmg" aria-label="Weapon 1 damage"></td></tr>
+        <tr><td><input id="Wpn2Name" aria-label="Weapon 2 name"></td><td><input id="Wpn2Atk" aria-label="Weapon 2 attack"></td><td><input id="Wpn2Dmg" aria-label="Weapon 2 damage"></td></tr>
+        <tr><td><input id="Wpn3Name" aria-label="Weapon 3 name"></td><td><input id="Wpn3Atk" aria-label="Weapon 3 attack"></td><td><input id="Wpn3Dmg" aria-label="Weapon 3 damage"></td></tr>
       </table>
-      <label>Notes / Features</label>
-      <textarea id="Features" rows="12"></textarea>
+      <label for="Features">Notes / Features</label>
+      <textarea id="Features" rows="8"></textarea>
     </div>
   </div>
 
-  <div class="grid cols-3" style="margin-top:14px">
+  <div class="grid cols-3" style="margin-top:16px">
     <div class="card">
       <h2>Ability Scores</h2>
       <div class="grid cols-6" id="abilities"></div>
-      <h2 style="margin-top:14px">Saving Throws</h2>
+      <h3>Saving Throws</h3>
       <div id="saves"></div>
     </div>
+
     <div class="card">
-      <h2>Skills <span style="font-size:.65rem;color:var(--muted)">(click dot = proficient)</span></h2>
+      <h2>Skills <span class="hint">(click a dot to toggle proficiency)</span></h2>
       <div id="skills"></div>
     </div>
+
     <div class="card">
       <h2>Spellcasting</h2>
       <div class="grid cols-3">
-        <div class="bigstat"><label>L1 Slots</label><input id="Slots1"></div>
-        <div class="bigstat"><label>L1 Left</label><input id="Slots1Left"></div>
-        <div class="bigstat"><label>Passive Wis</label><input id="PassiveWis"></div>
+        <div class="bigstat"><label for="Slots1">L1 Slots</label><input id="Slots1"></div>
+        <div class="bigstat"><label for="Slots1Left">L1 Left</label><input id="Slots1Left"></div>
+        <div class="bigstat"><label for="PassiveWis">Passive Wis</label><input id="PassiveWis"></div>
+        <div class="bigstat"><label for="Slots2">L2 Slots</label><input id="Slots2"></div>
+        <div class="bigstat"><label for="Slots2Left">L2 Left</label><input id="Slots2Left"></div>
+        <div class="bigstat"><label for="Slots3">L3 Slots</label><input id="Slots3"></div>
+        <div class="bigstat"><label for="Slots3Left">L3 Left</label><input id="Slots3Left"></div>
       </div>
-      <div class="grid cols-3">
-        <div class="bigstat"><label>L2 Slots</label><input id="Slots2"></div>
-        <div class="bigstat"><label>L2 Left</label><input id="Slots2Left"></div>
-        <div class="bigstat"><label>L3 Slots</label><input id="Slots3"></div>
-      </div>
-      <div class="grid cols-3">
-        <div class="bigstat"><label>L3 Left</label><input id="Slots3Left"></div>
-        <div class="bigstat"><label></label><input style="visibility:hidden"></div>
-        <div class="bigstat"><label></label><input style="visibility:hidden"></div>
-      </div>
-      <label>Spells Known / Prepared</label>
+      <label for="Spells">Spells Known / Prepared</label>
       <textarea id="Spells" rows="7"></textarea>
       <p class="note"><a href="https://dnd5e.wikidot.com/spells" target="_blank" rel="noopener">spell list ↗</a></p>
     </div>
   </div>
   </div><!-- /tab-char -->
 
-  <div id="tab-drake" style="display:none">
+  <!-- ══ DRAKE ══ -->
+  <div id="tab-drake" role="tabpanel" aria-labelledby="tabbtn-drake" tabindex="0" hidden>
   <div class="grid cols-3">
     <div class="card">
       <h2>Drake Companion</h2>
-      <label>Drake Name</label><input id="DrakeName">
-      <label>Draconic Essence (chosen each summon)</label>
+      <label for="DrakeName">Drake Name</label><input id="DrakeName">
+      <label for="DrakeEssence">Draconic Essence (chosen each summon)</label>
       <select id="DrakeEssence">
         <option>acid</option><option>cold</option><option>fire</option>
         <option>lightning</option><option>poison</option>
       </select>
-      <div class="grid cols-3" style="margin-top:8px">
-        <div class="bigstat"><label>AC (14+PB)</label><input id="DrakeAC"></div>
-        <div class="bigstat"><label>HP (5 + 5×lvl)</label><input id="DrakeHP"></div>
-        <div class="bigstat"><label>Speed</label><input id="DrakeSpeed"></div>
+      <div class="grid cols-3" style="margin-top:12px">
+        <div class="bigstat"><label for="DrakeAC">AC (14+PB)</label><input id="DrakeAC"></div>
+        <div class="bigstat"><label for="DrakeHP">HP (5 + 5×lvl)</label><input id="DrakeHP"></div>
+        <div class="bigstat"><label for="DrakeSpeed">Speed</label><input id="DrakeSpeed"></div>
       </div>
       <p class="note">Small dragon · darkvision 60 ft. · immune to essence damage type · speaks Draconic</p>
     </div>
+
     <div class="card">
       <h2>Ability Scores</h2>
       <table>
         <tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr>
         <tr><td>16 (+3)</td><td>12 (+1)</td><td>15 (+2)</td><td>8 (−1)</td><td>14 (+2)</td><td>8 (−1)</td></tr>
       </table>
-      <label>Saving Throws</label>
-      <input value="Dex +5, Wis +6 (stat + PB)" readonly>
-      <h2 style="margin-top:14px">Actions &amp; Reactions</h2>
+      <label for="DrakeSaves">Saving Throws</label>
+      <input id="DrakeSaves" value="Dex +5, Wis +6 (stat + PB)" readonly>
+      <h3>Actions &amp; Reactions</h3>
       <table>
         <tr><th>Name</th><th>Attack</th><th>Damage</th></tr>
-        <tr><td><input id="DrakeBiteName"></td><td><input id="DrakeBiteAtk"></td><td><input id="DrakeBiteDmg"></td></tr>
-        <tr><td>Infused Strikes</td><td>reaction</td><td><input id="DrakeInfused"></td></tr>
+        <tr><td><input id="DrakeBiteName" aria-label="Drake attack name"></td><td><input id="DrakeBiteAtk" aria-label="Drake attack bonus"></td><td><input id="DrakeBiteDmg" aria-label="Drake attack damage"></td></tr>
+        <tr><td>Infused Strikes</td><td>reaction</td><td><input id="DrakeInfused" aria-label="Infused Strikes damage"></td></tr>
       </table>
     </div>
+
     <div class="card">
       <h2>Bond of Fang &amp; Scale (7th lvl)</h2>
-      <ul style="font-size:.9rem;margin:.4em 0;padding-left:1.2em">
+      <ul class="list">
         <li>Drake grows wings → <b>fly 40 ft.</b> (can't fly while you ride it)</li>
         <li><b>Drake Mount:</b> grows to Medium; you can ride it</li>
         <li><b>Magic Fang:</b> Bite +1d6 essence damage (included above)</li>
         <li><b>Resistance:</b> you gain resistance to the essence damage type</li>
       </ul>
-      <h2>Rules</h2>
-      <ul style="font-size:.85rem;color:var(--muted);margin:.4em 0;padding-left:1.2em">
+      <h3>Rules</h3>
+      <ul class="list dim">
         <li>Summon: action, within 30 ft. 1/long rest (or spend a spell slot)</li>
         <li>Shares your initiative, acts right after you; Dodge by default — bonus action to command</li>
         <li>Infused Strikes: when a creature within 30 ft hits with a weapon attack, drake adds +1d6 essence damage</li>
       </ul>
-      <label>Notes</label>
+      <label for="DrakeNotes">Notes</label>
       <textarea id="DrakeNotes" rows="3"></textarea>
       <p class="note"><a href="https://dnd5e.wikidot.com/ranger:drakewarden" target="_blank" rel="noopener">drakewarden rules ↗</a></p>
     </div>
   </div>
   </div><!-- /tab-drake -->
 
-  <div id="tab-spells" style="display:none">
+  <!-- ══ SPELLS ══ -->
+  <div id="tab-spells" role="tabpanel" aria-labelledby="tabbtn-spells" tabindex="0" hidden>
   <div class="card">
-    <h2>📖 Spellbook <span style="font-size:.65rem;color:var(--muted)">2024/2025 PHB rules · Spell save DC 15 · Spell attack +7</span></h2>
+    <h2>Spellbook <span class="hint">2024/2025 PHB rules · Spell save DC 15 · Spell attack +7</span></h2>
 
-    <h3 style="margin:14px 0 4px;color:var(--accent)">Cantrips (at-will)</h3>
-    <div class="card" style="margin-bottom:10px">
-      <b>Thaumaturgy</b> <span class="note">Transmutation · 1 action · 30 ft. · V</span>
-      <p style="font-size:.85rem;margin:.3em 0">Minor wonder for 1 minute (up to 3 active, dismiss as an action): your voice booms ×3; flames flicker/brighten/dim/change color; harmless tremor; an instantaneous sound (thunder, raven's cry, ominous whispers) from a point in range; an unlocked door/window slams open or shut; your eyes change appearance.</p>
-    </div>
-
-    <h3 style="margin:14px 0 4px;color:var(--accent)">1st Level · 4 slots</h3>
-    <div class="card" style="margin-bottom:10px">
-      <b>Hunter's Mark</b> <span class="note">Divination · 1 <b>bonus action</b> · 90 ft. · V · Concentration, up to 1 hour</span>
-      <p style="font-size:.85rem;margin:.3em 0">Mark a creature. Your weapon attacks vs it deal <b>+1d6 Force damage</b>, and you have advantage on checks to find/track it. If it drops to 0 HP before the spell ends, you can move the mark to a new creature with a later bonus action. (2024: damage is now Force; Rangers get it for free &amp; it's iconic.)</p>
-    </div>
-    <div class="card" style="margin-bottom:10px">
-      <b>Cure Wounds</b> <span class="note">Abjuration · 1 action · Touch · V,S</span>
-      <p style="font-size:.85rem;margin:.3em 0">A creature regains <b>2d8 + Wis mod</b> HP. <i>Upcast: +2d8 per slot above 1st.</i></p>
-    </div>
-    <div class="card" style="margin-bottom:10px">
-      <b>Speak with Animals</b> <span class="note">Divination · 1 action (or Ritual) · Self · V,S · 10 min</span>
-      <p style="font-size:.85rem;margin:.3em 0">Talk to Beasts. They can tell you what they've seen nearby. Persuasion checks with Beasts may be influenced at DM's discretion.</p>
+    <h3>Cantrips (at-will)</h3>
+    <div class="card spell-entry">
+      <b>Thaumaturgy</b> <span class="spell-meta">Transmutation · 1 action · 30 ft. · V</span>
+      <p>Minor wonder for 1 minute (up to 3 active, dismiss as an action): your voice booms ×3; flames flicker/brighten/dim/change color; harmless tremor; an instantaneous sound (thunder, raven's cry, ominous whispers) from a point in range; an unlocked door/window slams open or shut; your eyes change appearance.</p>
     </div>
 
-    <h3 style="margin:14px 0 4px;color:var(--accent)">2nd Level · 3 slots</h3>
-    <div class="card" style="margin-bottom:10px">
-      <b>Pass without Trace</b> <span class="note">Abjuration · 1 action · Self · V,S · Concentration, up to 1 hour</span>
-      <p style="font-size:.85rem;margin:.3em 0">Veil yourself + companions within 30 ft.: <b>+10 to Dexterity (Stealth) checks</b>, leave no tracks, and <b>can't be tracked except by magical means</b>. (2024: aura still 30 ft.) — pairs beautifully with Perfect Hide.</p>
+    <h3>1st Level · 4 slots</h3>
+    <div class="card spell-entry">
+      <b>Hunter's Mark</b> <span class="spell-meta">Divination · 1 <b>bonus action</b> · 90 ft. · V · Concentration, up to 1 hour</span>
+      <p>Mark a creature. Your weapon attacks vs it deal <b>+1d6 Force damage</b>, and you have advantage on checks to find/track it. If it drops to 0 HP before the spell ends, you can move the mark to a new creature with a later bonus action. (2024: damage is now Force; Rangers get it for free &amp; it's iconic.)</p>
+    </div>
+    <div class="card spell-entry">
+      <b>Cure Wounds</b> <span class="spell-meta">Abjuration · 1 action · Touch · V,S</span>
+      <p>A creature regains <b>2d8 + Wis mod</b> HP. <i>Upcast: +2d8 per slot above 1st.</i></p>
+    </div>
+    <div class="card spell-entry">
+      <b>Speak with Animals</b> <span class="spell-meta">Divination · 1 action (or Ritual) · Self · V,S · 10 min</span>
+      <p>Talk to Beasts. They can tell you what they've seen nearby. Persuasion checks with Beasts may be influenced at DM's discretion.</p>
     </div>
 
-    <h3 style="margin:14px 0 4px;color:var(--accent)">3rd Level · 2 slots</h3>
-    <div class="card" style="margin-bottom:10px">
-      <b>Nondetection</b> <span class="note">Abjuration · 1 action · Touch · V,S,M (25 gp diamond dust, consumed) · 8 hours</span>
-      <p style="font-size:.85rem;margin:.3em 0">Target can't be targeted by Divination magic or perceived through magical scrying sensors. No concentration.</p>
+    <h3>2nd Level · 3 slots</h3>
+    <div class="card spell-entry">
+      <b>Pass without Trace</b> <span class="spell-meta">Abjuration · 1 action · Self · V,S · Concentration, up to 1 hour</span>
+      <p>Veil yourself + companions within 30 ft.: <b>+10 to Dexterity (Stealth) checks</b>, leave no tracks, and <b>can't be tracked except by magical means</b>. (2024: aura still 30 ft.) — pairs beautifully with Perfect Hide.</p>
     </div>
 
-    <p class="note" style="margin-top:10px">⚠️ 2024 Ranger is a <b>prepared caster</b> — you can swap spells on a long rest. Slots: 4 / 3 / 2. Casting stat: <b>Wisdom</b>.</p>
+    <h3>3rd Level · 2 slots</h3>
+    <div class="card spell-entry">
+      <b>Nondetection</b> <span class="spell-meta">Abjuration · 1 action · Touch · V,S,M (25 gp diamond dust, consumed) · 8 hours</span>
+      <p>Target can't be targeted by Divination magic or perceived through magical scrying sensors. No concentration.</p>
+    </div>
+
+    <p class="note">2024 Ranger is a <b>prepared caster</b> — you can swap spells on a long rest. Slots: 4 / 3 / 2. Casting stat: <b>Wisdom</b>.</p>
   </div>
   </div><!-- /tab-spells -->
 
-  <div id="tab-bag" style="display:none">
+  <!-- ══ BAG ══ -->
+  <div id="tab-bag" role="tabpanel" aria-labelledby="tabbtn-bag" tabindex="0" hidden>
   <div class="grid cols-3">
     <div class="card">
-      <h2>🎒 Bag</h2>
+      <h2>Coin</h2>
       <div class="grid cols-3">
-        <div class="bigstat"><label>Gold</label><input id="Gold"></div>
-        <div class="bigstat"><label>Silver</label><input id="Silver"></div>
-        <div class="bigstat"><label>Copper</label><input id="Copper"></div>
+        <div class="bigstat"><label for="Gold">Gold</label><input id="Gold"></div>
+        <div class="bigstat"><label for="Silver">Silver</label><input id="Silver"></div>
+        <div class="bigstat"><label for="Copper">Copper</label><input id="Copper"></div>
       </div>
-      <label style="margin-top:14px">Quick add / remove gold</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-        <button class="ghost" style="padding:5px 12px" onclick="adjGold(-10)">−10</button>
-        <button class="ghost" style="padding:5px 12px" onclick="adjGold(-1)">−1</button>
-        <button class="ghost" style="padding:5px 12px" onclick="adjGold(1)">+1</button>
-        <button class="ghost" style="padding:5px 12px" onclick="adjGold(10)">+10</button>
-        <button class="ghost" style="padding:5px 12px" onclick="adjGold(100)">+100</button>
+      <label>Quick add / remove gold</label>
+      <div class="btn-row">
+        <button class="btn ghost" type="button" onclick="adjGold(-10)">−10</button>
+        <button class="btn ghost" type="button" onclick="adjGold(-1)">−1</button>
+        <button class="btn ghost" type="button" onclick="adjGold(1)">+1</button>
+        <button class="btn ghost" type="button" onclick="adjGold(10)">+10</button>
+        <button class="btn ghost" type="button" onclick="adjGold(100)">+100</button>
       </div>
     </div>
+
     <div class="card" style="grid-column:span 2">
       <h2>Equipment</h2>
-      <table id="itemTable">
-        <tr><th style="text-align:left">Item</th><th style="width:70px">Qty</th><th style="width:60px"></th></tr>
-      </table>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="newItemName" placeholder="Add an item…" style="flex:1" onkeydown="if(event.key==='Enter')addItem()">
-        <input id="newItemQty" placeholder="Qty" style="width:70px" onkeydown="if(event.key==='Enter')addItem()">
-        <button style="padding:7px 14px" onclick="addItem()">+ Add</button>
+      <table id="itemTable"></table>
+      <div class="btn-row">
+        <input id="newItemName" placeholder="Add an item…" aria-label="New item name" style="flex:1;min-width:160px" onkeydown="if(event.key==='Enter')addItem()">
+        <input id="newItemQty" placeholder="Qty" aria-label="New item quantity" style="width:76px" onkeydown="if(event.key==='Enter')addItem()">
+        <button class="btn" type="button" onclick="addItem()">+ Add</button>
       </div>
       <p class="note">Items auto-save · click ✕ to remove</p>
     </div>
   </div>
-  <div class="card" style="margin-top:14px">
+
+  <div class="card" style="margin-top:16px">
     <h2>Explorer's Pack (standard gear)</h2>
-    <p style="font-size:.85rem;color:var(--muted);margin:.3em 0">Backpack · bedroll · mess kit · tinderbox · 10 torches · 10 days rations · waterskin · 50 ft hempen rope — plus: Whisper · Longbow +1 · Shortsword · quiver of 20 arrows · leather armor</p>
+    <p class="spell-meta">Backpack · bedroll · mess kit · tinderbox · 10 torches · 10 days rations · waterskin · 50 ft hempen rope — plus: Whisper · Longbow +1 · Shortsword · quiver of 20 arrows · leather armor</p>
   </div>
   </div><!-- /tab-bag -->
 
-  <div id="tab-notes" style="display:none">
-    <div class="grid cols-3">
-      <div class="card" style="grid-column:span 3">
-        <h2>📝 Session Notes</h2>
-        <div class="notes-wrap">
-          <div class="notes-side" id="noteSide"></div>
-          <div class="notes-main" id="noteMain"></div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-          <button onclick="addNote()">+ Add session note</button>
-          <button class="ghost" onclick="copyNotes()">📋 Copy all notes</button>
-        </div>
-        <p class="note">Notes auto-save · tap a title to read/edit · ✕ removes</p>
+  <!-- ══ NOTES ══ -->
+  <div id="tab-notes" role="tabpanel" aria-labelledby="tabbtn-notes" tabindex="0" hidden>
+    <div class="card">
+      <h2>Session Notes</h2>
+      <div class="notes-wrap">
+        <div class="notes-side" id="noteSide"></div>
+        <div class="notes-main" id="noteMain"></div>
       </div>
+      <div class="btn-row">
+        <button class="btn" type="button" onclick="addNote()">+ Add session note</button>
+        <button class="btn ghost" type="button" onclick="copyNotes()">Copy all notes</button>
+      </div>
+      <p class="note">Notes auto-save · tap a title to read/edit · ✕ removes</p>
     </div>
-  </div>
+  </div><!-- /tab-notes -->
 
-  </div>
-  </div>
+  </div><!-- /sheet-stage -->
+  </div><!-- /sheet-shell -->
+</div><!-- /wrap -->
 
-</div>
-<div class="saved" id="savedTag">✓ saved</div>
+<div class="saved" id="savedTag" role="status" aria-live="polite">✓ saved</div>
 </body>
 </html>

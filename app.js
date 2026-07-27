@@ -43,48 +43,84 @@ try{
 if(!Array.isArray(state.items)) state.items = [];
 if(!Array.isArray(state.notes)) state.notes = [];
 
+/* ---- tiny DOM helpers -------------------------------------------------
+   Everything below builds nodes with createElement/textContent rather than
+   innerHTML: character data round-trips through localStorage, so treating
+   it as markup would let a tampered save inject script. ------------------ */
+function mk(tag, cls){
+  const n=document.createElement(tag);
+  if(cls) n.className=cls;
+  return n;
+}
+
+/* One proficiency row: [toggle dot] [name (ABL)] [value] */
+function skillRow({label, sub, value, pressed, onToggle}){
+  const row=mk("div","skill");
+
+  const dot=mk("button","dot");
+  dot.type="button";
+  dot.setAttribute("aria-pressed", String(!!pressed));
+  dot.setAttribute("aria-label", label+" proficiency");
+  dot.addEventListener("click", onToggle);
+
+  const name=mk("span","name");
+  name.textContent=label;
+  if(sub){
+    const s=mk("small");
+    s.textContent=" "+sub;
+    name.appendChild(s);
+  }
+
+  const val=mk("span","val");
+  val.textContent=value;
+
+  row.append(dot, name, val);
+  return row;
+}
+
 function render(){
   Object.keys(DEFAULTS).forEach(k=>{
     const el = document.getElementById(k);
     if(el) el.value = state[k] ?? "";
   });
   document.getElementById("char-title").textContent = state.CharacterName || "Character Sheet";
-  // abilities
-  const ab = document.getElementById("abilities"); ab.innerHTML="";
-  ABILITIES.forEach(a=>{
-    const d=document.createElement("div"); d.className="stat";
-    d.innerHTML=`<label>${a.id}</label><div class="mod">${state.abilities[a.id]}</div>`+
-      `<input data-ab="${a.id}" value="${state.abilities[a.id]}">`;
-    ab.appendChild(d);
-  });
-  ab.querySelectorAll("input").forEach(i=>i.addEventListener("input",e=>{
-    state.abilities[e.target.dataset.ab]=e.target.value;
-    e.target.previousElementSibling.textContent=e.target.value; saveAll();
+  // abilities — the input itself is the big readout, so the value is
+  // only ever shown once.
+  const ab = document.getElementById("abilities");
+  ab.replaceChildren(...ABILITIES.map(a=>{
+    const d=mk("div","stat");
+    const lb=mk("label"); lb.htmlFor="ab-"+a.id; lb.textContent=a.id;
+    const inp=document.createElement("input");
+    inp.id="ab-"+a.id; inp.dataset.ab=a.id; inp.value=state.abilities[a.id];
+    inp.addEventListener("input",()=>{ state.abilities[a.id]=inp.value; saveAll(); });
+    d.append(lb,inp);
+    return d;
   }));
   // saves
-  const sv=document.getElementById("saves"); sv.innerHTML="";
-  ABILITIES.forEach(a=>{
-    const d=document.createElement("div"); d.className="skill";
-    d.innerHTML=`<span class="dot ${state.saveProf.includes(a.id)?'prof':''}" data-save="${a.id}"></span>`+
-      `<span style="flex:1">${a.id} save</span><span class="val">${state.saves[a.id]}</span>`;
-    sv.appendChild(d);
-  });
+  const sv=document.getElementById("saves");
+  sv.replaceChildren(...ABILITIES.map(a=>
+    skillRow({
+      label: a.id+" save",
+      value: state.saves[a.id],
+      pressed: state.saveProf.includes(a.id),
+      onToggle: ()=>{
+        const p=state.saveProf;
+        p.includes(a.id) ? p.splice(p.indexOf(a.id),1) : p.push(a.id);
+        saveAll(); render();
+      }
+    })
+  ));
   // skills
-  const sk=document.getElementById("skills"); sk.innerHTML="";
-  state.skills.forEach((s,i)=>{
-    const d=document.createElement("div"); d.className="skill";
-    d.innerHTML=`<span class="dot ${s.prof?'prof':''}" data-skill="${i}"></span>`+
-      `<span style="flex:1">${s.name} <small style="color:var(--muted)">(${s.ab})</small></span>`+
-      `<span class="val">${s.val}</span>`;
-    sk.appendChild(d);
-  });
-  document.querySelectorAll("[data-save]").forEach(el=>el.onclick=()=>{
-    const id=el.dataset.save, p=state.saveProf;
-    p.includes(id)?p.splice(p.indexOf(id),1):p.push(id); saveAll(); render();
-  });
-  document.querySelectorAll("[data-skill]").forEach(el=>el.onclick=()=>{
-    const s=state.skills[el.dataset.skill]; s.prof=!s.prof; saveAll(); render();
-  });
+  const sk=document.getElementById("skills");
+  sk.replaceChildren(...state.skills.map(s=>
+    skillRow({
+      label: s.name,
+      sub: "("+s.ab+")",
+      value: s.val,
+      pressed: !!s.prof,
+      onToggle: ()=>{ s.prof=!s.prof; saveAll(); render(); }
+    })
+  ));
   // bind top fields
   Object.keys(DEFAULTS).forEach(k=>{
     const el=document.getElementById(k);
@@ -114,12 +150,36 @@ function adjHP(d){
   const next=Math.min(max, Math.max(0, cur+d));
   state.HPCurrent=String(next); el.value=String(next); saveAll();
 }
+const TABS=['char','drake','spells','bag','notes'];
+
 function showTab(t){
-  ['char','drake','spells','bag','notes'].forEach(x=>{
-    document.getElementById('tab-'+x).style.display = x===t?'':'none';
-    document.getElementById('tabbtn-'+x).classList.toggle('active', x===t);
+  TABS.forEach(x=>{
+    const on = x===t;
+    // `hidden` rather than an inline style: one source of truth for
+    // visibility, and it keeps hidden panels out of the a11y tree.
+    document.getElementById('tab-'+x).hidden = !on;
+    const btn=document.getElementById('tabbtn-'+x);
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-selected', String(on));
+    btn.tabIndex = on ? 0 : -1;   // roving tabindex
   });
 }
+
+/* Arrow keys move between tabs, per the ARIA tabs pattern. */
+document.addEventListener('keydown', e=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+  const btn=e.target.closest?.('.tab');
+  if(!btn) return;
+  const i=TABS.indexOf(btn.id.replace('tabbtn-',''));
+  if(i<0) return;
+  const next = e.key==='Home' ? 0
+             : e.key==='End'  ? TABS.length-1
+             : e.key==='ArrowLeft' ? (i-1+TABS.length)%TABS.length
+             : (i+1)%TABS.length;
+  e.preventDefault();
+  showTab(TABS[next]);
+  document.getElementById('tabbtn-'+TABS[next]).focus();
+});
 render();
 
 function adjGold(n){
@@ -129,17 +189,48 @@ function adjGold(n){
 }
 function renderItems(){
   const t=document.getElementById('itemTable');
-  t.innerHTML='<tr><th style="text-align:left">Item</th><th style="width:70px">Qty</th><th style="width:60px"></th></tr>';
-  state.items.forEach((it,i)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML='<td style="padding:4px 6px"><input style="width:100%" value=""></td><td style="text-align:center"><input style="text-align:center" value=""></td><td style="text-align:center"><button class="ghost" style="padding:2px 8px" title="remove">✕</button></td>';
-    const nm=tr.children[0].firstChild; nm.value=it.name;
-    nm.oninput=()=>{state.items[i].name=nm.value; saveAll();};
-    const q=tr.children[1].firstChild; q.value=it.qty;
-    q.oninput=()=>{state.items[i].qty=q.value; saveAll();};
-    tr.children[2].firstChild.onclick=()=>{state.items.splice(i,1); saveAll(); renderItems();};
-    t.appendChild(tr);
+
+  const head=mk('tr');
+  ['Item','Qty',''].forEach((label,c)=>{
+    const th=mk('th');
+    th.textContent=label;
+    if(c===1) th.style.width='76px';
+    if(c===2) th.style.width='56px';
+    head.appendChild(th);
   });
+
+  const rows=state.items.map((it,i)=>{
+    const tr=mk('tr');
+
+    const nm=document.createElement('input');
+    nm.value=it.name;
+    nm.setAttribute('aria-label','Item name');
+    nm.oninput=()=>{ state.items[i].name=nm.value; saveAll(); };
+
+    const q=document.createElement('input');
+    q.value=it.qty;
+    q.style.textAlign='center';
+    q.setAttribute('aria-label','Quantity of '+it.name);
+    q.oninput=()=>{ state.items[i].qty=q.value; saveAll(); };
+
+    const del=mk('button','btn ghost');
+    del.type='button';
+    del.textContent='✕';
+    del.style.padding='4px 10px';
+    del.title='Remove '+it.name;
+    del.setAttribute('aria-label','Remove '+it.name);
+    del.onclick=()=>{ state.items.splice(i,1); saveAll(); renderItems(); };
+
+    [nm,q,del].forEach(child=>{
+      const td=mk('td');
+      if(child!==nm) td.style.textAlign='center';
+      td.appendChild(child);
+      tr.appendChild(td);
+    });
+    return tr;
+  });
+
+  t.replaceChildren(head, ...rows);
 }
 function addItem(){
   const n=document.getElementById('newItemName'), q=document.getElementById('newItemQty');
@@ -151,64 +242,112 @@ function addItem(){
 renderItems();
 let activeNote = 0;
 function ensureNotes(){ if(!Array.isArray(state.notes)) state.notes=[]; }
+const ISO_DATE=/^\d{4}-\d{2}-\d{2}$/;
+
+/* One entry in the notes sidebar. Shared by both render paths so the
+   list can't drift between them. */
+function noteRow(n, i){
+  const row=mk('div','nrow'+(i===activeNote?' active':''));
+
+  const del=mk('span','ndel');
+  del.textContent='✕';
+  del.title='remove';
+  del.onclick=(e)=>{
+    e.stopPropagation();
+    state.notes.splice(i,1);
+    if(activeNote>=state.notes.length) activeNote=state.notes.length-1;
+    saveAll(); renderNotes();
+  };
+
+  const isDate=ISO_DATE.test(n.title||'');
+  const date=mk('span','ndate');
+  date.textContent=isDate ? n.title : '';
+
+  const label=mk('span');
+  label.textContent=isDate ? 'Untitled' : (n.title||'Untitled');
+
+  row.append(del, date, label);
+  row.onclick=(e)=>{
+    if(e.target.classList.contains('ndel')) return;
+    activeNote=i; renderNotes();
+  };
+  return row;
+}
+
+function renderSideOnly(){
+  ensureNotes();
+  const side=document.getElementById('noteSide');
+  if(!side) return;
+  side.replaceChildren(...state.notes.map(noteRow));
+}
+
+const NOTE_TOOLS=[
+  ['bold',                null, 'B',       'Bold'],
+  ['italic',              null, 'I',       'Italic'],
+  ['insertUnorderedList', null, '• List',  'Bulleted list'],
+  ['insertOrderedList',   null, '1. List', 'Numbered list'],
+  ['formatBlock',         'H2', 'H',       'Heading'],
+  ['removeFormat',        null, '⤬',       'Clear formatting']
+];
+
 function renderNotes(){
   ensureNotes();
   const side=document.getElementById('noteSide');
   const main=document.getElementById('noteMain');
+
   if(!state.notes.length){
-    side.innerHTML='';
-    main.innerHTML='<p class="note-empty">No notes yet — hit “+ Add session note”.</p>';
+    side.replaceChildren();
+    const empty=mk('p','note-empty');
+    empty.textContent='No notes yet — hit “+ Add session note”.';
+    main.replaceChildren(empty);
     return;
   }
-  if(activeNote>=state.notes.length) activeNote=state.notes.length-1;
-  if(activeNote<0) activeNote=0;
-  side.innerHTML='';
-  state.notes.forEach((n,i)=>{
-    const row=document.createElement('div');
-    row.className='nrow'+(i===activeNote?' active':'');
-    const date=(n.title&&/^\d{4}-\d{2}-\d{2}$/.test(n.title))?n.title:'';
-    const label=(date? '' : (n.title||'Untitled')) || (date?'Untitled':'');
-    row.innerHTML='<span class="ndel" title="remove">✕</span><span class="ndate">'+(date||'')+'</span>'+escapeHtml(label||'Untitled');
-    row.onclick=(e)=>{ if(e.target.classList.contains('ndel')) return; activeNote=i; renderNotes(); };
-    row.querySelector('.ndel').onclick=(e)=>{ e.stopPropagation(); state.notes.splice(i,1); if(activeNote>=state.notes.length) activeNote=state.notes.length-1; saveAll(); renderNotes(); };
-    side.appendChild(row);
-  });
+
+  activeNote=Math.min(Math.max(activeNote,0), state.notes.length-1);
+  renderSideOnly();
+
   const n=state.notes[activeNote];
-  main.innerHTML=
-    '<input class="note-title" placeholder="Session title / date">'+
-    '<div class="wysiwig-bar">'+
-      '<button onclick="fmt(\'bold\')"><b>B</b></button>'+
-      '<button onclick="fmt(\'italic\')"><i>I</i></button>'+
-      '<button onclick="fmt(\'insertUnorderedList\')">• List</button>'+
-      '<button onclick="fmt(\'insertOrderedList\')">1. List</button>'+
-      '<button onclick="fmt(\'formatBlock\',\'H2\')">H</button>'+
-      '<button onclick="fmt(\'removeFormat\')">⤬</button>'+
-    '</div>'+
-    '<div class="note-editor" contenteditable="true" id="noteEditor"></div>';
-  const titleEl=main.querySelector('.note-title');
-  const ed=main.querySelector('#noteEditor');
+
+  const titleEl=document.createElement('input');
+  titleEl.className='note-title';
+  titleEl.placeholder='Session title / date';
+  titleEl.setAttribute('aria-label','Note title');
   titleEl.value=n.title||'';
+
+  const bar=mk('div','wysiwig-bar');
+  bar.setAttribute('role','toolbar');
+  bar.setAttribute('aria-label','Formatting');
+  NOTE_TOOLS.forEach(([cmd,arg,text,title])=>{
+    const b=mk('button');
+    b.type='button';
+    b.textContent=text;
+    b.title=title;
+    b.setAttribute('aria-label',title);
+    b.onclick=()=>fmt(cmd,arg);
+    bar.appendChild(b);
+  });
+
+  const ed=mk('div','note-editor');
+  ed.id='noteEditor';
+  ed.contentEditable='true';
+  ed.setAttribute('role','textbox');
+  ed.setAttribute('aria-multiline','true');
+  ed.setAttribute('aria-label','Note body');
+  // Rich-text body: this is the user's own content in their own
+  // browser, and contenteditable round-trips as HTML by design.
   ed.innerHTML=n.body||'';
+
   titleEl.oninput=()=>{ state.notes[activeNote].title=titleEl.value; saveAll(); renderSideOnly(); };
   ed.oninput=()=>{ state.notes[activeNote].body=ed.innerHTML; saveAll(); };
+
+  main.replaceChildren(titleEl, bar, ed);
 }
-function renderSideOnly(){
-  ensureNotes();
-  const side=document.getElementById('noteSide'); if(!side) return;
-  side.innerHTML='';
-  state.notes.forEach((n,i)=>{
-    const row=document.createElement('div');
-    row.className='nrow'+(i===activeNote?' active':'');
-    const date=(n.title&&/^\d{4}-\d{2}-\d{2}$/.test(n.title))?n.title:'';
-    const label=(date? '' : (n.title||'Untitled'));
-    row.innerHTML='<span class="ndel" title="remove">✕</span><span class="ndate">'+(date||'')+'</span>'+escapeHtml(label||'Untitled');
-    row.onclick=(e)=>{ if(e.target.classList.contains('ndel')) return; activeNote=i; renderNotes(); };
-    row.querySelector('.ndel').onclick=(e)=>{ e.stopPropagation(); state.notes.splice(i,1); if(activeNote>=state.notes.length) activeNote=state.notes.length-1; saveAll(); renderNotes(); };
-    side.appendChild(row);
-  });
+
+function fmt(cmd,val){
+  document.execCommand(cmd,false,val||null);
+  const ed=document.getElementById('noteEditor');
+  if(ed){ ed.focus(); state.notes[activeNote].body=ed.innerHTML; saveAll(); }
 }
-function fmt(cmd,val){ document.execCommand(cmd,false,val||null); const ed=document.getElementById('noteEditor'); if(ed){ ed.focus(); state.notes[activeNote].body=ed.innerHTML; saveAll(); } }
-function escapeHtml(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 function addNote(){
   ensureNotes();
   const ds=new Date().toISOString().slice(0,10);
@@ -229,7 +368,6 @@ function copyNotes(){
     setTimeout(()=>{tag.style.opacity=0; tag.textContent='✓ saved';},1400);
   }).catch(()=>alert('Copy blocked by browser — select the text and copy manually.'));
 }
-renderNotes();
 function exportJSON(){
   const data=JSON.stringify(state,null,2);
   const blob=new Blob([data],{type:'application/json'});
@@ -239,3 +377,7 @@ function exportJSON(){
   document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
 renderNotes();
+
+// Sync the tab rail once on load so `hidden`, aria-selected and the
+// roving tabindex all start from a known state.
+showTab('char');
