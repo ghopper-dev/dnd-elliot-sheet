@@ -26,6 +26,7 @@
 
   /* --- geometry (Figma) --- */
   --r-tab:    10px;   /* tab + Save button corner  */
+  --tab-edge: 11px;   /* room for the drawn frame  */
   --r-slot:   16px;   /* HP number well            */
   --r-card:   10px;
   --rule:     4px;    /* green line under the tabs */
@@ -236,8 +237,8 @@ body::after {
 .btn-save:active { transform: translateY(1px); }
 
 .btn-save .icon {
-  width: clamp(30px, 3.4vw, 48px);
-  height: clamp(31px, 3.5vw, 50px);
+  width: clamp(35px, 3.9vw, 55px);
+  height: clamp(35px, 3.9vw, 55px);
 }
 
 /* Reset / Export are deliberately quiet — the design only calls
@@ -266,8 +267,8 @@ body::after {
 }
 
 .hp-heart {
-  width: clamp(44px, 4.7vw, 68px);
-  height: clamp(44px, 4.7vw, 68px);
+  width: clamp(50px, 5.4vw, 78px);
+  height: clamp(50px, 5.4vw, 78px);
   object-fit: contain;
 }
 
@@ -340,10 +341,13 @@ body::after {
   gap: clamp(6px, .8vw, 12px);
   flex: 1 1 0;
   max-width: 240px;
-  min-height: clamp(46px, 4.4vw, 64px);
-  padding: 0 clamp(8px, 1vw, 16px);
-  border: var(--stroke) solid var(--accent);
-  border-bottom: var(--rule) solid var(--accent);
+  /* Tall enough that the thick drawn edge doesn't crowd the icon:
+     the border eats 2 x --tab-edge out of the box. */
+  min-height: clamp(56px, 5.4vw, 78px);
+  padding: 0 clamp(6px, .8vw, 12px);
+  /* Both states carry the same border width so the label and icon
+     don't shift when you change tabs — only the painting differs. */
+  border: var(--tab-edge) solid var(--accent);
   border-radius: var(--r-tab) var(--r-tab) 0 0;
   background: var(--veil);
   color: var(--ink);
@@ -355,12 +359,19 @@ body::after {
   transition: background .15s ease, opacity .15s ease;
 }
 
-.tab:not(.active) { opacity: .74; }
+/* Unselected tabs wear the hand-drawn frame. border-image replaces the
+   solid border entirely and brings its own notched corners, so the
+   border-radius above simply stops applying to them. */
+.tab:not(.active) {
+  border-image: url("icons/tab-frame.png") 6 stretch;
+  opacity: .8;
+}
 
 .tab:hover:not(.active) { opacity: 1; background: rgba(35, 54, 24, .8); }
 
-/* The selected tab joins the panel: its bottom edge is cut away so
-   it reads as one surface with the content below. */
+/* The selected tab joins the panel: its bottom edge is transparent, and
+   because backgrounds paint under the border box that same strip covers
+   the green rule below — which is what fuses tab and panel. */
 .tab.active {
   background: rgba(35, 54, 24, .92);
   border-bottom-color: transparent;
@@ -372,8 +383,8 @@ body::after {
 }
 
 .tabicon {
-  width: clamp(24px, 2.6vw, 38px);
-  height: clamp(24px, 2.6vw, 38px);
+  width: clamp(28px, 3.1vw, 46px);
+  height: clamp(28px, 3.1vw, 46px);
   object-fit: contain;
   flex: none;
 }

@@ -58,6 +58,7 @@ needed.
 | `icons/spellbook.png` | Spells tab | 64×64 |
 | `icons/notes.png` | Notes tab | 64×64 |
 | `icons/drake.png` | Drake tab | 64×64 |
+| `icons/tab-frame.png` | Border around unselected tabs | 46×22 |
 
 **Rules for replacements — these are what keep the set looking like a set:**
 
@@ -74,6 +75,13 @@ needed.
 
 Every icon in the set is now hand-drawn pixel art — no library placeholders
 left.
+
+`tab-frame.png` is the odd one out: it's a CSS `border-image`, not an `<img>`.
+It must be **cropped tight to the artwork** with no transparent margin,
+because `border-image-slice` measures in from the file's edges — a
+centred drawing on a padded canvas would slice mostly empty space. The
+slice is `6`, matching the corner motif; if you redraw it with bigger
+corners, raise that number to match in `style.css`.
 
 ---
 
