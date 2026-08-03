@@ -99,7 +99,20 @@ That's why the **⤓ Export JSON** button exists — until cloud sync arrives, t
 
 ## Planned: cross-device sync
 
-The next step is wiring the sheet to a **Google Sheet as a backend** (the page becomes a "fancy UI for a spreadsheet"): same `state` shape, just a different save target, so notes follow you across devices and back themselves up automatically. Not built yet — the localStorage version is the working prototype.
+The sheet is becoming a **player's companion** — accounts, multiple characters,
+cross-device sync, session recaps, and eventually a rules-aware character
+builder. [`ROADMAP.md`](ROADMAP.md) has the full plan and the reasoning behind
+each decision.
+
+First step is underway in [`app/`](app/): this same sheet ported to SvelteKit +
+TypeScript, verified pixel-for-pixel against the version you're using, still
+saving to the same `localStorage` key. **It is not live** — the page above is
+still served from this folder, and stays that way until the port has earned the
+swap. See [`app/README.md`](app/README.md).
+
+*(An earlier plan used a Google Sheet as the backend. Superseded — the project
+is going to a self-hostable TypeScript + Postgres monolith instead; ROADMAP §4
+has the reasoning.)*
 
 ---
 
