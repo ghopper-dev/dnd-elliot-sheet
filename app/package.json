@@ -11,7 +11,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"test:e2e": "npm run build && (vite preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/dnd-companion-preview.log 2>&1 & PREVIEW=$!; trap 'kill $PREVIEW 2>/dev/null || true' EXIT; for i in $(seq 1 50); do curl -fs http://127.0.0.1:4173/ >/dev/null 2>&1 && break; sleep .1; done; URL=http://127.0.0.1:4173/ node e2e/smoke.mjs)"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.1",
@@ -19,11 +20,12 @@
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
 		"@vitest/coverage-v8": "^4.1.10",
+		"playwright": "^1.62.1",
 		"svelte": "^5.56.1",
 		"svelte-check": "^4.6.0",
 		"typescript": "^6.0.3",
 		"vite": "^8.0.16",
 		"vitest": "^4.1.10"
 	},
-	"description": "D&D player companion \u2014 v1 UI port of the Elliot character sheet"
+	"description": "D&D player companion — v1 UI port of the Elliot character sheet"
 }
