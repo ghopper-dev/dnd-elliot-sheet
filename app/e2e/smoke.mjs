@@ -11,14 +11,14 @@
  * anything that touches state or the notes editor.
  *
  *   npm run build && npm run preview -- --port 4173 &
- *   npm i -D playwright-core          # or: npm i -D playwright && npx playwright install chromium
+ *   npx playwright install chromium   # first run only, if Chromium is not already installed
  *   URL=http://localhost:4173/ node e2e/smoke.mjs
  *
  * CHROME=/path/to/chrome overrides browser discovery, which is needed on any
  * machine where Playwright cannot install its own.
  */
 
-import { chromium } from 'playwright-core';
+import { chromium } from 'playwright';
 
 const URL = process.env.URL ?? 'http://localhost:4173/';
 const KEY = 'elliot-sheet-v1';

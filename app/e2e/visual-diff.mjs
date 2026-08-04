@@ -16,11 +16,11 @@
  *   # terminal 3
  *   node e2e/visual-diff.mjs
  *
- * Needs `playwright-core` and, for the diff numbers, ImageMagick (`compare`).
+ * Needs Playwright's Chromium browser and, for the diff numbers, ImageMagick (`compare`).
  * Without ImageMagick it still writes the screenshots for eyeballing.
  */
 
-import { chromium } from 'playwright-core';
+import { chromium } from 'playwright';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 
